@@ -1,4 +1,4 @@
-// version: 1.0.0
+// version: 1.0.1
 import Phaser from "phaser";
 export default function registerNinePatchFactory() {
     Phaser.GameObjects.GameObjectFactory.register("ninePatch", function (x, y, width, height, key, frame) {
