@@ -14,16 +14,6 @@ $ npm i --save-dev phasereditor2d-ninepatch-plugin
 
 It is important that you install the package as a development dependency (`--save-dev`), because Phaser Editor 2D only searches for plugins in that section. Also, the `package.json` file should be in the root of the project.
 
-### Install via zip files
-
-Download the [latest release](https://github.com/PhaserEditor2D/phasereditor2d-ninepatch-plugin/releases). Unzip it and  execute the editor's server with the `-plugins` flag:
-
-```bash
-$ PhaserEditor2D -plugins path/to/phasereditor2d-ninepatch-plugin-1.x.x/
-```
-
-Open the browser in [http://127.0.0.1:1959](http://127.0.0.1:1959/)
-
 ## Help
 
 [Read the User Guide wiki](https://github.com/PhaserEditor2D/PhaserEditor2D-v3-extras/wiki)
