@@ -5,7 +5,8 @@
   "repository": "github:PhaserEditor2D/phasereditor2d-ninepatch-plugin",
   "keywords": ["phaser", "nine-patch", "game-object", "plugin", "html5", "games"],
   "scripts": {    
-    "start": "tsc -b -w source"
+    "start": "tsc -b -w source",
+    "build": "tsc -b source"
   },
   "devDependencies": {
     "tslint": "^6.1.3",
