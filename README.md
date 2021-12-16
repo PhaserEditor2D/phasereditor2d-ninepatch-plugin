@@ -4,9 +4,7 @@ This repository contains NinePatch plugin for Phaser Editor 2D v3.
 
 ## Install
 
-### Install via NPM
-
-You can install the plugin using npmjs:
+The plugin is distributed as an NPM package:
 
 ```bash
 $ npm i --save-dev phasereditor2d-ninepatch-plugin

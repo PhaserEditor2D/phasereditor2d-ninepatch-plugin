@@ -1,8 +1,9 @@
 {
   "name": "phasereditor2d-ninepatch-plugin",
   "version": "1.0.0",
-  "description": "Phaser Editor 2D Extra Plugins.",
+  "description": "NinePatch plugin for Phaser Editor 2D.",
   "repository": "github:PhaserEditor2D/phasereditor2d-ninepatch-plugin",
+  "keywords": ["phaser", "nine-patch", "game-object", "plugin", "html5", "games"],
   "scripts": {    
     "start": "tsc -b -w source"
   },
