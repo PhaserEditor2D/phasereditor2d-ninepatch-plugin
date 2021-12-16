@@ -14,10 +14,6 @@ $ npm i --save-dev phasereditor2d-ninepatch-plugin
 
 It is important that you install the package as a development dependency (`--save-dev`), because Phaser Editor 2D only searches for plugins in that section. Also, the `package.json` file should be in the root of the project.
 
-## Help
-
-[Read the User Guide wiki](https://github.com/PhaserEditor2D/PhaserEditor2D-v3-extras/wiki)
-
 ## Development build
 
 Create a "workspace" folder. It is a folder with all the repositories you will need:
@@ -41,15 +37,15 @@ Clone this repository
 ```bash
 $ git clone https://github.com/PhaserEditor2D/phasereditor2d-ninepatch-plugin.git
 ```
-Build the extra plugins:
+Build the plugins:
 
 ```
-$ cd PhaserEditor2D-v3-extras
+$ cd phasereditor2d-ninepatch-plugin
 $ npm install
-$ npm run build
+$ npm start
 ```
 
-Run the latest version of the `PhaserEditor2D` server. It should load the extra plugins with the `-plugins` flag:
+Run the latest version of the `PhaserEditor2D` server. It should load plugin with the `-plugins` flag:
 
 ```bash
 $ PhaserEditor2D -plugins "source/plugins"

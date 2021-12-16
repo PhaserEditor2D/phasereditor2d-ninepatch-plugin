@@ -3,8 +3,7 @@
   "version": "1.0.0",
   "description": "Phaser Editor 2D Extra Plugins.",
   "repository": "github:PhaserEditor2D/phasereditor2d-ninepatch-plugin",
-  "scripts": {
-    "build": "tsc -b source",
+  "scripts": {    
     "start": "tsc -b -w source"
   },
   "devDependencies": {
