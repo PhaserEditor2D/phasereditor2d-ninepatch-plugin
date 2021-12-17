@@ -1,6 +1,7 @@
 // version: 1.0.2
 
 import Phaser from "phaser";
+import NinePatch from "./NinePatch";
 
 export default function registerNinePatchFactory() {
 

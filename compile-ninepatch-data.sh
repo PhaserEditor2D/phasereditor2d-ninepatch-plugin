@@ -16,7 +16,7 @@ npx tsc -t esnext --outDir ../js registerNinePatchFactory.ts &> /dev/null
 cp * ../ts-module
 cd ../ts-module
 sed -i 's/class/import Phaser from "phaser";\n\nexport default class/' NinePatch.ts
-sed -i 's/function registerNinePatchFactory/import Phaser from "phaser";\n\nexport default function registerNinePatchFactory/' registerNinePatchFactory.ts
+sed -i 's/function registerNinePatchFactory/import Phaser from "phaser";\nimport NinePatch from ".\/NinePatch";\n\nexport default function registerNinePatchFactory/' registerNinePatchFactory.ts
 
 npx tsc -t esnext --outDir ../js-module NinePatch.ts &> /dev/null
 npx tsc -t esnext --outDir ../js-module registerNinePatchFactory.ts &> /dev/null
