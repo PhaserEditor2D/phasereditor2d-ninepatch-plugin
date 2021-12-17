@@ -58,11 +58,4 @@ The `build.sh` script creates the distribution files, in the `dist/` folder:
 ```bash
 $ ./build.sh
 ```
-
-The `zip` argument creates the distribution zip files, in the `dist-zip/` folder:
-
-```bash
-$ ./build.sh zip
-```
-
-The build script requires a Unix-like environment.
+This script requires a Unix-like environment.
