@@ -408,6 +408,8 @@ var phasereditor2d;
                 return this._instance;
             }
             registerExtensions(reg) {
+                const VER = "1.0.6";
+                console.log(`%c %c phasereditor2d-ninepatch-plugin %c v${VER} %c %c https://github.com/PhaserEditor2D/phasereditor2d-ninepatch-plugin `, "background-color:brown", "background-color:#3f3f3f;color:whitesmoke", "background-color:orange;color:black", "background-color:brown", "background-color:silver");
                 reg.addExtension(colibri.ui.ide.IconLoaderExtension.withPluginFiles(this, [
                     ninepatch.ICON_NINEPATCH
                 ]));

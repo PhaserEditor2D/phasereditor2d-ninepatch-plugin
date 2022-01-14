@@ -1,3 +1,8 @@
+## v1.0.6 - Jan 14, 2022
+
+* Scripts for npm publishing.
+* Prints ninepatch version in console.
+
 ## v1.0.5 - Jan 14, 2022
 
 * Gets texture size from texture manager. TileSprite brush updates with new texture.
