@@ -1,4 +1,4 @@
-// version: 1.0.3
+// version: 1.0.5
 
 class NinePatch extends Phaser.GameObjects.RenderTexture {
 
@@ -9,7 +9,6 @@ class NinePatch extends Phaser.GameObjects.RenderTexture {
     marginTop = 20;
     marginRight = 20;
     marginBottom = 20;
-    private _textureImage: Phaser.GameObjects.Image;
     private _brush: Phaser.GameObjects.TileSprite;
 
     constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, key: string, frame?: string | number) {
@@ -20,16 +19,8 @@ class NinePatch extends Phaser.GameObjects.RenderTexture {
 
         this._brush = new Phaser.GameObjects.TileSprite(scene, 0, 0, 1, 1, key, frame);
         this._brush.setOrigin(0, 0);
-        this._textureImage = new Phaser.GameObjects.Image(scene, 0, 0, key, frame);
 
         this.scene.events.once("update", () => this.redraw());
-    }
-
-    destroy(): void {
-
-        this._textureImage.destroy();
-
-        super.destroy();
     }
 
     redraw(): void {
@@ -51,10 +42,13 @@ class NinePatch extends Phaser.GameObjects.RenderTexture {
             return;
         }
 
+        this._brush.setTexture(this.textureKey, this.textureFrame);
+
         this.beginDraw();
 
-        const texWidth = this._textureImage.width;
-        const texHeight = this._textureImage.height;
+        const tex = this.scene.textures.getFrame(this.textureKey, this.textureFrame);
+        const texWidth = tex.width;
+        const texHeight = tex.height;
 
         const ml = this.marginLeft;
         const mt = this.marginTop;
@@ -133,8 +127,6 @@ class NinePatch extends Phaser.GameObjects.RenderTexture {
 
         this.textureKey = key;
         this.textureFrame = frame;
-
-        this._textureImage.setTexture(this.textureKey, this.textureFrame);
 
         this.redraw();
     }
