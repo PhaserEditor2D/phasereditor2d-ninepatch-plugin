@@ -320,6 +320,12 @@ var phasereditor2d;
                 super(ninepatch.NinePatchExtension.getInstance(), obj, scene);
                 this.addComponent(new sceneobjects.SizeComponent(obj), new ninepatch.NinePatchComponent(obj));
             }
+            getPropertyDefaultValue(prop) {
+                if (prop === sceneobjects.OriginComponent.originX || prop === sceneobjects.OriginComponent.originY) {
+                    return 0;
+                }
+                return super.getPropertyDefaultValue(prop);
+            }
             setInteractive() {
                 this.getObject().setInteractive();
             }

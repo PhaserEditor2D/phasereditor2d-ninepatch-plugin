@@ -1,3 +1,7 @@
+## v1.1.0 - Mar 6, 2022
+
+* Fixes default origin on the NinePatch editor support (0, 0).
+
 ## v1.0.6 - Jan 14, 2022
 
 * Scripts for npm publishing.

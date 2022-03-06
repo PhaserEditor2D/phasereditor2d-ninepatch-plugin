@@ -70,6 +70,7 @@ declare namespace phasereditor2d.ninepatch {
     import sceneobjects = scene.ui.sceneobjects;
     class NinePatchEditorSupport extends sceneobjects.BaseImageEditorSupport<NinePatch> {
         constructor(obj: NinePatch, scene: phasereditor2d.scene.ui.Scene);
+        getPropertyDefaultValue(prop: sceneobjects.IProperty<any>): any;
         setInteractive(): void;
     }
 }
