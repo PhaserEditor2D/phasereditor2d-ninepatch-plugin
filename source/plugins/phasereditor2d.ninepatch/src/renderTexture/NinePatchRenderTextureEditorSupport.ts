@@ -1,12 +1,12 @@
 
-namespace phasereditor2d.ninepatch {
+namespace phasereditor2d.ninepatch.renderTexture {
 
     import sceneobjects = scene.ui.sceneobjects;
 
-    export class NinePatchEditorSupport extends sceneobjects.BaseImageEditorSupport<NinePatch> {
+    export class NinePatchRenderTextureEditorSupport extends sceneobjects.BaseImageEditorSupport<NinePatchRenderTexture> {
 
-        constructor(obj: NinePatch, scene: phasereditor2d.scene.ui.Scene) {
-            super(NinePatchExtension.getInstance(), obj, scene);
+        constructor(obj: NinePatchRenderTexture, scene: phasereditor2d.scene.ui.Scene) {
+            super(NinePatchRenderTextureExtension.getInstance(), obj, scene);
 
             this.addComponent(
                 new sceneobjects.SizeComponent(obj),

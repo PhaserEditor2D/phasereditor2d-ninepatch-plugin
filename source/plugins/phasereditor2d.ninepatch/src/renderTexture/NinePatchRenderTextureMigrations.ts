@@ -1,6 +1,6 @@
-namespace phasereditor2d.ninepatch {
+namespace phasereditor2d.ninepatch.renderTexture {
 
-    export class NinePatchMigrations extends scene.ui.SceneDataMigrationExtension {
+    export class NinePatchRenderTextureMigrations extends scene.ui.SceneDataMigrationExtension {
 
         async migrate(data: scene.core.json.ISceneData): Promise<void> {
 

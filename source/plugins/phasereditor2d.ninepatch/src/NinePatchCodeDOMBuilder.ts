@@ -11,7 +11,7 @@ namespace phasereditor2d.ninepatch {
 
         buildCreatePrefabInstanceCodeDOM(args: sceneobjects.IBuildPrefabConstructorCodeDOMArgs) {
 
-            const obj = args.obj as NinePatch;
+            const obj = args.obj as INinePatch;
             const support = obj.getEditorSupport();
             const call = args.methodCallDOM;
 
@@ -54,7 +54,7 @@ namespace phasereditor2d.ninepatch {
 
         buildCreateObjectWithFactoryCodeDOM(args: sceneobjects.IBuildObjectFactoryCodeDOMArgs): code.MethodCallCodeDOM {
 
-            const obj = args.obj as NinePatch;
+            const obj = args.obj as INinePatch;
             const call = new code.MethodCallCodeDOM("ninePatch", args.gameObjectFactoryExpr);
 
             call.argFloat(obj.x);

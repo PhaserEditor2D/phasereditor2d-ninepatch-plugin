@@ -2,157 +2,73 @@ var phasereditor2d;
 (function (phasereditor2d) {
     var ninepatch;
     (function (ninepatch) {
-        class NinePatch extends Phaser.GameObjects.RenderTexture {
-            constructor(scene, x, y, width, height, key, frame) {
-                super(scene, x, y, width, height);
-                this._drawCenter = true;
-                this._marginLeft = 20;
-                this._marginTop = 20;
-                this._marginRight = 20;
-                this._marginBottom = 20;
-                this._editorSupport = new ninepatch.NinePatchEditorSupport(this, scene);
-                this._key = key;
-                this._frame = frame;
-                this._brush = new Phaser.GameObjects.TileSprite(scene, 0, 0, 1, 1, key, frame);
-                this._brush.setOrigin(0, 0);
-                this._textureImage = new Phaser.GameObjects.Image(scene, 0, 0, key, frame);
-                this._updateListener = () => {
-                    if (this._dirty) {
-                        this.redraw();
-                    }
-                };
-                this.scene.events.on("update", this._updateListener);
+        function drawNinePatch(config) {
+            const { obj, rt, brush, textureImage, scene } = config;
+            rt.clear();
+            if (!scene.textures.getFrame(obj.textureKey, obj.textureFrame)) {
+                const gr = new Phaser.GameObjects.Graphics(scene);
+                gr.fillStyle(0);
+                gr.fillRect(0, 0, obj.width, obj.height);
+                gr.lineStyle(2, 0x00ff00);
+                gr.strokeRect(0, 0, obj.width, obj.height);
+                gr.strokeLineShape(new Phaser.Geom.Line(0, 0, obj.width, obj.height));
+                rt.draw(gr);
+                return;
             }
-            destroy() {
-                this.scene?.events?.removeListener("update", this._updateListener);
-                this._brush.destroy();
-                this._textureImage.destroy();
-                super.destroy();
+            rt.beginDraw();
+            const texWidth = textureImage.width;
+            const texHeight = textureImage.height;
+            const ml = obj.marginLeft;
+            const mt = obj.marginTop;
+            const mr = obj.marginRight;
+            const mb = obj.marginBottom;
+            // center
+            if (obj.drawCenter) {
+                brush.setSize(texWidth - ml - mr, texHeight - mt - mb);
+                brush.setTilePosition(ml, mt);
+                brush.setDisplaySize(obj.width - ml - mr, obj.height - mt - mb);
+                rt.batchDraw(brush, ml, mt);
             }
-            getEditorSupport() {
-                return this._editorSupport;
-            }
-            redraw() {
-                this._dirty = false;
-                this.clear();
-                if (!this._brush || this._brush.texture.key === "__DEFAULT" || this._brush.texture.key === "__MISSING") {
-                    const gr = new Phaser.GameObjects.Graphics(this.scene);
-                    gr.fillStyle(0);
-                    gr.fillRect(0, 0, this.width, this.height);
-                    gr.lineStyle(2, 0x00ff00);
-                    gr.strokeRect(0, 0, this.width, this.height);
-                    gr.strokeLineShape(new Phaser.Geom.Line(0, 0, this.width, this.height));
-                    this.draw(gr);
-                    return;
-                }
-                this.beginDraw();
-                const texWidth = this._textureImage.width;
-                const texHeight = this._textureImage.height;
-                const ml = this.marginLeft;
-                const mt = this.marginTop;
-                const mr = this.marginRight;
-                const mb = this.marginBottom;
-                // center
-                if (this.drawCenter) {
-                    this._brush.setSize(texWidth - ml - mr, texHeight - mt - mb);
-                    this._brush.setTilePosition(ml, mt);
-                    this._brush.setDisplaySize(this.width - ml - mr, this.height - mt - mb);
-                    this.batchDraw(this._brush, ml, mt);
-                }
-                // top
-                this._brush.setSize(texWidth - ml - mr, mt);
-                this._brush.setTilePosition(ml, 0);
-                this._brush.setDisplaySize(this.width - ml - mr, mt);
-                this.batchDraw(this._brush, ml, 0);
-                // right
-                this._brush.setSize(mr, texHeight - mt - mb);
-                this._brush.setTilePosition(texWidth - mr, mt);
-                this._brush.setDisplaySize(mr, this.height - mt - mb);
-                this.batchDraw(this._brush, this.width - mr, mt);
-                // bottom
-                this._brush.setSize(texWidth - ml - mr, mb);
-                this._brush.setTilePosition(ml, texHeight - mb);
-                this._brush.setDisplaySize(this.width - ml - mr, mb);
-                this.batchDraw(this._brush, ml, this.height - mb);
-                // left
-                this._brush.setSize(ml, texHeight - mt - mb);
-                this._brush.setTilePosition(0, mt);
-                this._brush.setDisplaySize(ml, this.height - mt - mb);
-                this.batchDraw(this._brush, 0, mt);
-                this._brush.setScale(1, 1);
-                // left/top
-                this._brush.setSize(ml, mt);
-                this._brush.setTilePosition(0, 0);
-                this.batchDraw(this._brush);
-                // right/top
-                this._brush.setSize(mr, mt);
-                this._brush.setTilePosition(texWidth - mr, 0);
-                this.batchDraw(this._brush, this.width - mr, 0);
-                // right/bottom
-                this._brush.setSize(mr, mb);
-                this._brush.setTilePosition(texWidth - mr, texHeight - mb);
-                this.batchDraw(this._brush, this.width - mr, this.height - mb);
-                // left/bottom
-                this._brush.setSize(ml, mb);
-                this._brush.setTilePosition(0, texHeight - mb);
-                this.batchDraw(this._brush, 0, this.height - mb);
-                this.endDraw();
-            }
-            setSize(width, height) {
-                super.setSize(width, height);
-                this.redraw();
-                return this;
-            }
-            set drawCenter(drawCenter) {
-                this._dirty = this._dirty || drawCenter !== this._drawCenter;
-                this._drawCenter = drawCenter;
-            }
-            get drawCenter() {
-                return this._drawCenter;
-            }
-            set marginLeft(marginLeft) {
-                this._dirty = this._dirty || marginLeft !== this._marginLeft;
-                this._marginLeft = marginLeft;
-            }
-            get marginLeft() {
-                return this._marginLeft;
-            }
-            set marginTop(marginTop) {
-                this._dirty = this._dirty || marginTop !== this._marginTop;
-                this._marginTop = marginTop;
-            }
-            get marginTop() {
-                return this._marginTop;
-            }
-            set marginRight(marginRight) {
-                this._dirty = this._dirty || marginRight !== this._marginRight;
-                this._marginRight = marginRight;
-            }
-            get marginRight() {
-                return this._marginRight;
-            }
-            set marginBottom(marginBottom) {
-                this._dirty = this._dirty || marginBottom !== this._marginBottom;
-                this._marginBottom = marginBottom;
-            }
-            get marginBottom() {
-                return this._marginBottom;
-            }
-            setTexture(key, frame) {
-                this._dirty = this._dirty || key !== this._key || frame !== this._frame;
-                this._key = key;
-                this._frame = frame;
-                this._brush.setTexture(this._key, this._frame);
-                this._textureImage.setTexture(this._key, this._frame);
-            }
-            get textureKey() {
-                return this._key;
-            }
-            get textureFrame() {
-                return this._frame;
-            }
+            // top
+            brush.setSize(texWidth - ml - mr, mt);
+            brush.setTilePosition(ml, 0);
+            brush.setDisplaySize(obj.width - ml - mr, mt);
+            rt.batchDraw(brush, ml, 0);
+            // right
+            brush.setSize(mr, texHeight - mt - mb);
+            brush.setTilePosition(texWidth - mr, mt);
+            brush.setDisplaySize(mr, obj.height - mt - mb);
+            rt.batchDraw(brush, obj.width - mr, mt);
+            // bottom
+            brush.setSize(texWidth - ml - mr, mb);
+            brush.setTilePosition(ml, texHeight - mb);
+            brush.setDisplaySize(obj.width - ml - mr, mb);
+            rt.batchDraw(brush, ml, obj.height - mb);
+            // left
+            brush.setSize(ml, texHeight - mt - mb);
+            brush.setTilePosition(0, mt);
+            brush.setDisplaySize(ml, obj.height - mt - mb);
+            rt.batchDraw(brush, 0, mt);
+            brush.setScale(1, 1);
+            // left/top
+            brush.setSize(ml, mt);
+            brush.setTilePosition(0, 0);
+            rt.batchDraw(brush);
+            // right/top
+            brush.setSize(mr, mt);
+            brush.setTilePosition(texWidth - mr, 0);
+            rt.batchDraw(brush, obj.width - mr, 0);
+            // right/bottom
+            brush.setSize(mr, mb);
+            brush.setTilePosition(texWidth - mr, texHeight - mb);
+            rt.batchDraw(brush, obj.width - mr, obj.height - mb);
+            // left/bottom
+            brush.setSize(ml, mb);
+            brush.setTilePosition(0, texHeight - mb);
+            rt.batchDraw(brush, 0, obj.height - mb);
+            rt.endDraw();
         }
-        ninepatch.NinePatch = NinePatch;
+        ninepatch.drawNinePatch = drawNinePatch;
     })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
 })(phasereditor2d || (phasereditor2d = {}));
 var phasereditor2d;
@@ -314,95 +230,6 @@ var phasereditor2d;
 (function (phasereditor2d) {
     var ninepatch;
     (function (ninepatch) {
-        var sceneobjects = phasereditor2d.scene.ui.sceneobjects;
-        class NinePatchEditorSupport extends sceneobjects.BaseImageEditorSupport {
-            constructor(obj, scene) {
-                super(ninepatch.NinePatchExtension.getInstance(), obj, scene);
-                this.addComponent(new sceneobjects.SizeComponent(obj), new ninepatch.NinePatchComponent(obj));
-            }
-            getPropertyDefaultValue(prop) {
-                if (prop === sceneobjects.OriginComponent.originX || prop === sceneobjects.OriginComponent.originY) {
-                    return 0;
-                }
-                return super.getPropertyDefaultValue(prop);
-            }
-            setInteractive() {
-                this.getObject().setInteractive();
-            }
-        }
-        ninepatch.NinePatchEditorSupport = NinePatchEditorSupport;
-    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
-})(phasereditor2d || (phasereditor2d = {}));
-var phasereditor2d;
-(function (phasereditor2d) {
-    var ninepatch;
-    (function (ninepatch) {
-        class NinePatchExtension extends phasereditor2d.scene.ui.sceneobjects.BaseImageExtension {
-            constructor() {
-                super({
-                    phaserTypeName: "NinePatch",
-                    typeName: "NinePatch",
-                    category: phasereditor2d.scene.SCENE_OBJECT_IMAGE_CATEGORY,
-                    icon: ninepatch.NinePatchPlugin.getInstance().getIconDescriptor(ninepatch.ICON_NINEPATCH)
-                });
-            }
-            static getInstance() {
-                return this._instance ? this._instance : (this._instance = new NinePatchExtension());
-            }
-            getCodeDOMBuilder() {
-                return new ninepatch.NinePatchCodeDOMBuilder();
-            }
-            newObject(scene, x, y, key, frame) {
-                const w = 200;
-                const h = 100;
-                if (key) {
-                    return new ninepatch.NinePatch(scene, x, y, w, h, key, frame);
-                }
-                return new ninepatch.NinePatch(scene, x, y, w, h);
-            }
-            adaptDataAfterTypeConversion(serializer, originalObject, extraData) {
-                if ("width" in originalObject && "height" in originalObject) {
-                    serializer.write("width", originalObject["width"], 100);
-                    serializer.write("height", originalObject["height"], 200);
-                }
-            }
-        }
-        ninepatch.NinePatchExtension = NinePatchExtension;
-    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
-})(phasereditor2d || (phasereditor2d = {}));
-var phasereditor2d;
-(function (phasereditor2d) {
-    var ninepatch;
-    (function (ninepatch) {
-        class NinePatchMigrations extends phasereditor2d.scene.ui.SceneDataMigrationExtension {
-            async migrate(data) {
-                this.migrateObjects(data.displayList);
-            }
-            migrateObjects(list) {
-                for (const obj of list) {
-                    if ("ninePatchWidth" in obj) {
-                        obj["width"] = obj["ninePatchWidth"];
-                        delete obj["ninePatchWidth"];
-                        console.log(`NinePatchMigrations.ninePatchWidth: [${obj.id}]`);
-                    }
-                    if ("ninePatchHeight" in obj) {
-                        obj["height"] = obj["ninePatchHeight"];
-                        delete obj["ninePatchHeight"];
-                        console.log(`NinePatchMigrations.ninePatchHeight: [${obj.id}]`);
-                    }
-                    if (obj.list) {
-                        this.migrateObjects(obj.list);
-                    }
-                }
-            }
-        }
-        ninepatch.NinePatchMigrations = NinePatchMigrations;
-    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
-})(phasereditor2d || (phasereditor2d = {}));
-var phasereditor2d;
-(function (phasereditor2d) {
-    var ninepatch;
-    (function (ninepatch) {
         ninepatch.ICON_NINEPATCH = "ninepatch";
         ninepatch.CAT_NINEPATCH = "phasereditor2d.ninepatch.category";
         ninepatch.CMD_CREATE_NINEPATCH_USER_FILES = "phasereditor2d.ninepatch.CreateNinePatchUserFiles";
@@ -419,7 +246,8 @@ var phasereditor2d;
                 reg.addExtension(colibri.ui.ide.IconLoaderExtension.withPluginFiles(this, [
                     ninepatch.ICON_NINEPATCH
                 ]));
-                reg.addExtension(ninepatch.NinePatchExtension.getInstance());
+                reg.addExtension(ninepatch.renderTexture.NinePatchRenderTextureExtension.getInstance());
+                reg.addExtension(ninepatch.image.NinePatchImageExtension.getInstance());
                 reg.addExtension(new phasereditor2d.scene.ui.editor.properties.SceneEditorPropertySectionExtension(page => new ninepatch.NinePatchSection(page)));
                 reg.addExtension(new colibri.ui.ide.PluginResourceLoaderExtension(() => ninepatch.NinePatchCodeResources.getInstance().preload()));
                 reg.addExtension(new colibri.ui.ide.commands.CommandExtension(manager => {
@@ -444,7 +272,7 @@ var phasereditor2d;
                     }
                 }));
                 // migrations
-                reg.addExtension(new ninepatch.NinePatchMigrations());
+                reg.addExtension(new ninepatch.renderTexture.NinePatchRenderTextureMigrations());
             }
         }
         NinePatchPlugin._instance = new NinePatchPlugin();
@@ -469,7 +297,8 @@ var phasereditor2d;
                 field.labelElement.style.gridColumn = "2 / span 2";
             }
             canEdit(obj, n) {
-                return obj instanceof ninepatch.NinePatch;
+                return sceneobjects.GameObjectEditorSupport
+                    .hasObjectComponent(obj, ninepatch.NinePatchComponent);
             }
             canEditNumber(n) {
                 return n > 0;
@@ -487,5 +316,391 @@ var phasereditor2d;
         }
         NinePatchSection.SECTION_ID = "phasereditor2d.ninepatch.NinePatchSection";
         ninepatch.NinePatchSection = NinePatchSection;
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var image;
+        (function (image) {
+            class NinePatchImage extends Phaser.GameObjects.Image {
+                constructor(scene, x, y, width, height, key, frame) {
+                    super(scene, x, y, key, frame);
+                    this._settingCacheTexture = false;
+                    this._drawCenter = true;
+                    this._marginLeft = 20;
+                    this._marginTop = 20;
+                    this._marginRight = 20;
+                    this._marginBottom = 20;
+                    this.setSize(width, height);
+                    this.textureKey = key;
+                    this.textureFrame = frame;
+                    this._editorSupport = new image.NinePatchImageEditorSupport(this, scene);
+                    this._dirty = true;
+                    this._updateListener = () => {
+                        if (this._dirty) {
+                            this.redraw();
+                        }
+                    };
+                    this.scene.events.on("update", this._updateListener);
+                }
+                redraw() {
+                    const hashKey = [
+                        "NinePatchImage",
+                        this.width,
+                        this.height,
+                        this.marginLeft,
+                        this.marginRight,
+                        this.marginTop,
+                        this.marginBottom,
+                        this.drawCenter,
+                        this.textureKey,
+                        this.textureFrame,
+                    ].join(",");
+                    if (!this.scene.textures.exists(hashKey)) {
+                        // console.log(`NinePatchImage.generateTexture(${hashKey})`);
+                        const rt = new Phaser.GameObjects.RenderTexture(this.scene, 0, 0, this.width, this.height);
+                        const brush = new Phaser.GameObjects.TileSprite(this.scene, 0, 0, this.width, this.height, this.textureKey, this.textureFrame);
+                        brush.setOrigin(0, 0);
+                        const textureImage = new Phaser.GameObjects.Image(this.scene, 0, 0, this.textureKey, this.textureFrame);
+                        ninepatch.drawNinePatch({
+                            obj: this,
+                            rt,
+                            brush,
+                            textureImage,
+                            scene: this.scene
+                        });
+                        brush.destroy();
+                        textureImage.destroy();
+                        rt.saveTexture(hashKey);
+                    }
+                    this._settingCacheTexture = true;
+                    this.setTexture(hashKey);
+                    this._settingCacheTexture = false;
+                    this._dirty = false;
+                }
+                setTexture(key, frame) {
+                    if (!this._settingCacheTexture) {
+                        this._dirty = this._dirty || key !== this.textureKey || frame !== this.textureFrame;
+                        this.textureKey = key;
+                        this.textureFrame = frame;
+                    }
+                    return super.setTexture(key, frame);
+                }
+                setSize(width, height) {
+                    super.setSize(width, height);
+                    this.redraw();
+                    return this;
+                }
+                set drawCenter(drawCenter) {
+                    this._dirty = this._dirty || drawCenter !== this._drawCenter;
+                    this._drawCenter = drawCenter;
+                }
+                get drawCenter() {
+                    return this._drawCenter;
+                }
+                set marginLeft(marginLeft) {
+                    this._dirty = this._dirty || marginLeft !== this._marginLeft;
+                    this._marginLeft = marginLeft;
+                }
+                get marginLeft() {
+                    return this._marginLeft;
+                }
+                set marginTop(marginTop) {
+                    this._dirty = this._dirty || marginTop !== this._marginTop;
+                    this._marginTop = marginTop;
+                }
+                get marginTop() {
+                    return this._marginTop;
+                }
+                set marginRight(marginRight) {
+                    this._dirty = this._dirty || marginRight !== this._marginRight;
+                    this._marginRight = marginRight;
+                }
+                get marginRight() {
+                    return this._marginRight;
+                }
+                set marginBottom(marginBottom) {
+                    this._dirty = this._dirty || marginBottom !== this._marginBottom;
+                    this._marginBottom = marginBottom;
+                }
+                get marginBottom() {
+                    return this._marginBottom;
+                }
+                destroy() {
+                    this.scene?.events?.removeListener("update", this._updateListener);
+                    super.destroy();
+                }
+                getEditorSupport() {
+                    return this._editorSupport;
+                }
+            }
+            image.NinePatchImage = NinePatchImage;
+        })(image = ninepatch.image || (ninepatch.image = {}));
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var image;
+        (function (image) {
+            var sceneobjects = phasereditor2d.scene.ui.sceneobjects;
+            class NinePatchImageEditorSupport extends sceneobjects.BaseImageEditorSupport {
+                constructor(obj, scene) {
+                    super(image.NinePatchImageExtension.getInstance(), obj, scene);
+                    this.addComponent(new sceneobjects.SizeComponent(obj), new ninepatch.NinePatchComponent(obj));
+                }
+                setInteractive() {
+                    this.getObject().setInteractive(new Phaser.Geom.Rectangle(0, 0, 1, 1), (shape, x, y, obj) => {
+                        return x >= 0 && x <= obj.width && y >= 0 && y <= obj.height;
+                    });
+                }
+            }
+            image.NinePatchImageEditorSupport = NinePatchImageEditorSupport;
+        })(image = ninepatch.image || (ninepatch.image = {}));
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var image;
+        (function (image) {
+            class NinePatchImageExtension extends phasereditor2d.scene.ui.sceneobjects.BaseImageExtension {
+                constructor() {
+                    super({
+                        phaserTypeName: "NinePatchImage",
+                        typeName: "NinePatchImage",
+                        category: phasereditor2d.scene.SCENE_OBJECT_IMAGE_CATEGORY,
+                        icon: ninepatch.NinePatchPlugin.getInstance().getIconDescriptor(ninepatch.ICON_NINEPATCH)
+                    });
+                }
+                static getInstance() {
+                    return this._instance ? this._instance : (this._instance = new NinePatchImageExtension());
+                }
+                getCodeDOMBuilder() {
+                    return new ninepatch.NinePatchCodeDOMBuilder();
+                }
+                newObject(scene, x, y, key, frame) {
+                    const w = 200;
+                    const h = 100;
+                    if (key) {
+                        return new image.NinePatchImage(scene, x, y, w, h, key, frame);
+                    }
+                    return new image.NinePatchImage(scene, x, y, w, h);
+                }
+                adaptDataAfterTypeConversion(serializer, originalObject, extraData) {
+                    if ("width" in originalObject && "height" in originalObject) {
+                        serializer.write("width", originalObject["width"], 100);
+                        serializer.write("height", originalObject["height"], 200);
+                    }
+                }
+            }
+            image.NinePatchImageExtension = NinePatchImageExtension;
+        })(image = ninepatch.image || (ninepatch.image = {}));
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var renderTexture;
+        (function (renderTexture) {
+            class NinePatchRenderTexture extends Phaser.GameObjects.RenderTexture {
+                constructor(scene, x, y, width, height, key, frame) {
+                    super(scene, x, y, width, height);
+                    this._drawCenter = true;
+                    this._marginLeft = 20;
+                    this._marginTop = 20;
+                    this._marginRight = 20;
+                    this._marginBottom = 20;
+                    this._editorSupport = new renderTexture.NinePatchRenderTextureEditorSupport(this, scene);
+                    this._key = key;
+                    this._frame = frame;
+                    this._brush = new Phaser.GameObjects.TileSprite(scene, 0, 0, 1, 1, key, frame);
+                    this._brush.setOrigin(0, 0);
+                    this._textureImage = new Phaser.GameObjects.Image(scene, 0, 0, key, frame);
+                    this._updateListener = () => {
+                        if (this._dirty) {
+                            this.redraw();
+                        }
+                    };
+                    this.scene.events.on("update", this._updateListener);
+                }
+                destroy() {
+                    this.scene?.events?.removeListener("update", this._updateListener);
+                    this._brush.destroy();
+                    this._textureImage.destroy();
+                    super.destroy();
+                }
+                getEditorSupport() {
+                    return this._editorSupport;
+                }
+                redraw() {
+                    this._dirty = false;
+                    ninepatch.drawNinePatch({
+                        obj: this,
+                        rt: this,
+                        brush: this._brush,
+                        textureImage: this._textureImage,
+                        scene: this.scene
+                    });
+                }
+                setSize(width, height) {
+                    super.setSize(width, height);
+                    this.redraw();
+                    return this;
+                }
+                set drawCenter(drawCenter) {
+                    this._dirty = this._dirty || drawCenter !== this._drawCenter;
+                    this._drawCenter = drawCenter;
+                }
+                get drawCenter() {
+                    return this._drawCenter;
+                }
+                set marginLeft(marginLeft) {
+                    this._dirty = this._dirty || marginLeft !== this._marginLeft;
+                    this._marginLeft = marginLeft;
+                }
+                get marginLeft() {
+                    return this._marginLeft;
+                }
+                set marginTop(marginTop) {
+                    this._dirty = this._dirty || marginTop !== this._marginTop;
+                    this._marginTop = marginTop;
+                }
+                get marginTop() {
+                    return this._marginTop;
+                }
+                set marginRight(marginRight) {
+                    this._dirty = this._dirty || marginRight !== this._marginRight;
+                    this._marginRight = marginRight;
+                }
+                get marginRight() {
+                    return this._marginRight;
+                }
+                set marginBottom(marginBottom) {
+                    this._dirty = this._dirty || marginBottom !== this._marginBottom;
+                    this._marginBottom = marginBottom;
+                }
+                get marginBottom() {
+                    return this._marginBottom;
+                }
+                setTexture(key, frame) {
+                    this._dirty = this._dirty || key !== this._key || frame !== this._frame;
+                    this._key = key;
+                    this._frame = frame;
+                    this._brush.setTexture(this._key, this._frame);
+                    this._textureImage.setTexture(this._key, this._frame);
+                }
+                get textureKey() {
+                    return this._key;
+                }
+                get textureFrame() {
+                    return this._frame;
+                }
+            }
+            renderTexture.NinePatchRenderTexture = NinePatchRenderTexture;
+        })(renderTexture = ninepatch.renderTexture || (ninepatch.renderTexture = {}));
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var renderTexture;
+        (function (renderTexture) {
+            var sceneobjects = phasereditor2d.scene.ui.sceneobjects;
+            class NinePatchRenderTextureEditorSupport extends sceneobjects.BaseImageEditorSupport {
+                constructor(obj, scene) {
+                    super(renderTexture.NinePatchRenderTextureExtension.getInstance(), obj, scene);
+                    this.addComponent(new sceneobjects.SizeComponent(obj), new ninepatch.NinePatchComponent(obj));
+                }
+                getPropertyDefaultValue(prop) {
+                    if (prop === sceneobjects.OriginComponent.originX || prop === sceneobjects.OriginComponent.originY) {
+                        return 0;
+                    }
+                    return super.getPropertyDefaultValue(prop);
+                }
+                setInteractive() {
+                    this.getObject().setInteractive();
+                }
+            }
+            renderTexture.NinePatchRenderTextureEditorSupport = NinePatchRenderTextureEditorSupport;
+        })(renderTexture = ninepatch.renderTexture || (ninepatch.renderTexture = {}));
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var renderTexture;
+        (function (renderTexture) {
+            class NinePatchRenderTextureExtension extends phasereditor2d.scene.ui.sceneobjects.BaseImageExtension {
+                constructor() {
+                    super({
+                        phaserTypeName: "NinePatch",
+                        typeName: "NinePatch",
+                        category: phasereditor2d.scene.SCENE_OBJECT_IMAGE_CATEGORY,
+                        icon: ninepatch.NinePatchPlugin.getInstance().getIconDescriptor(ninepatch.ICON_NINEPATCH)
+                    });
+                }
+                static getInstance() {
+                    return this._instance ? this._instance : (this._instance = new NinePatchRenderTextureExtension());
+                }
+                getCodeDOMBuilder() {
+                    return new ninepatch.NinePatchCodeDOMBuilder();
+                }
+                newObject(scene, x, y, key, frame) {
+                    const w = 200;
+                    const h = 100;
+                    if (key) {
+                        return new renderTexture.NinePatchRenderTexture(scene, x, y, w, h, key, frame);
+                    }
+                    return new renderTexture.NinePatchRenderTexture(scene, x, y, w, h);
+                }
+                adaptDataAfterTypeConversion(serializer, originalObject, extraData) {
+                    if ("width" in originalObject && "height" in originalObject) {
+                        serializer.write("width", originalObject["width"], 100);
+                        serializer.write("height", originalObject["height"], 200);
+                    }
+                }
+            }
+            renderTexture.NinePatchRenderTextureExtension = NinePatchRenderTextureExtension;
+        })(renderTexture = ninepatch.renderTexture || (ninepatch.renderTexture = {}));
+    })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
+})(phasereditor2d || (phasereditor2d = {}));
+var phasereditor2d;
+(function (phasereditor2d) {
+    var ninepatch;
+    (function (ninepatch) {
+        var renderTexture;
+        (function (renderTexture) {
+            class NinePatchRenderTextureMigrations extends phasereditor2d.scene.ui.SceneDataMigrationExtension {
+                async migrate(data) {
+                    this.migrateObjects(data.displayList);
+                }
+                migrateObjects(list) {
+                    for (const obj of list) {
+                        if ("ninePatchWidth" in obj) {
+                            obj["width"] = obj["ninePatchWidth"];
+                            delete obj["ninePatchWidth"];
+                            console.log(`NinePatchMigrations.ninePatchWidth: [${obj.id}]`);
+                        }
+                        if ("ninePatchHeight" in obj) {
+                            obj["height"] = obj["ninePatchHeight"];
+                            delete obj["ninePatchHeight"];
+                            console.log(`NinePatchMigrations.ninePatchHeight: [${obj.id}]`);
+                        }
+                        if (obj.list) {
+                            this.migrateObjects(obj.list);
+                        }
+                    }
+                }
+            }
+            renderTexture.NinePatchRenderTextureMigrations = NinePatchRenderTextureMigrations;
+        })(renderTexture = ninepatch.renderTexture || (ninepatch.renderTexture = {}));
     })(ninepatch = phasereditor2d.ninepatch || (phasereditor2d.ninepatch = {}));
 })(phasereditor2d || (phasereditor2d = {}));

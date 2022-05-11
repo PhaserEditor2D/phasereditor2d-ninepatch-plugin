@@ -33,7 +33,8 @@ namespace phasereditor2d.ninepatch {
                 ICON_NINEPATCH
             ]));
 
-            reg.addExtension(NinePatchExtension.getInstance());
+            reg.addExtension(renderTexture.NinePatchRenderTextureExtension.getInstance());
+            reg.addExtension(image.NinePatchImageExtension.getInstance());
 
             reg.addExtension(new scene.ui.editor.properties.SceneEditorPropertySectionExtension(
                 page => new NinePatchSection(page),
@@ -63,7 +64,7 @@ namespace phasereditor2d.ninepatch {
                         handler: {
                             executeFunc: args => {
 
-                                NinePatchCodeResources.getInstance().createFiles(spec as any);
+                               NinePatchCodeResources.getInstance().createFiles(spec as any);
                             }
                         }
                     });
@@ -73,7 +74,7 @@ namespace phasereditor2d.ninepatch {
 
             // migrations
 
-            reg.addExtension(new NinePatchMigrations());
+            reg.addExtension(new renderTexture.NinePatchRenderTextureMigrations());
         }
     }
 

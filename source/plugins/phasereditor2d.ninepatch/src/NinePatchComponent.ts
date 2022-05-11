@@ -2,7 +2,7 @@ namespace phasereditor2d.ninepatch {
 
     import sceneobjects = scene.ui.sceneobjects;
 
-    export class NinePatchComponent extends sceneobjects.Component<NinePatch> {
+    export class NinePatchComponent extends sceneobjects.Component<INinePatch> {
 
         static marginLeft = sceneobjects.SimpleProperty("marginLeft", 20, "Left", "Margin left.", false);
         static marginRight = sceneobjects.SimpleProperty("marginRight", 20, "Right", "Margin right.", false);
@@ -21,7 +21,7 @@ namespace phasereditor2d.ninepatch {
 
         static drawCenter = sceneobjects.SimpleProperty("drawCenter", true, "Draw Center", "Draw center.", false);
 
-        constructor(obj: NinePatch) {
+        constructor(obj: INinePatch) {
             super(obj, [
                 NinePatchComponent.marginLeft,
                 NinePatchComponent.marginRight,

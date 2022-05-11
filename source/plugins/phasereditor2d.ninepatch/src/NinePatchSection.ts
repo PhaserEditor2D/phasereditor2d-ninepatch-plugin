@@ -3,7 +3,7 @@ namespace phasereditor2d.ninepatch {
     import controls = colibri.ui.controls;
     import sceneobjects = phasereditor2d.scene.ui.sceneobjects;
 
-    export class NinePatchSection extends scene.ui.sceneobjects.SceneGameObjectSection<NinePatch> {
+    export class NinePatchSection extends scene.ui.sceneobjects.SceneGameObjectSection<INinePatch> {
 
         static SECTION_ID = "phasereditor2d.ninepatch.NinePatchSection";
 
@@ -24,7 +24,8 @@ namespace phasereditor2d.ninepatch {
 
         canEdit(obj: any, n: number): boolean {
 
-            return obj instanceof NinePatch;
+            return sceneobjects.GameObjectEditorSupport
+                .hasObjectComponent(obj, NinePatchComponent);
         }
 
         canEditNumber(n: number): boolean {

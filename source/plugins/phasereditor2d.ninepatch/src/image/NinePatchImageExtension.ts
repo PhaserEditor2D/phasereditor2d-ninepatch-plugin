@@ -1,20 +1,20 @@
-namespace phasereditor2d.ninepatch {
+namespace phasereditor2d.ninepatch.image {
 
     import sceneobjects = scene.ui.sceneobjects;
 
-    export class NinePatchExtension extends scene.ui.sceneobjects.BaseImageExtension {
+    export class NinePatchImageExtension extends scene.ui.sceneobjects.BaseImageExtension {
 
-        private static _instance: NinePatchExtension;
+        private static _instance: NinePatchImageExtension;
 
         static getInstance() {
 
-            return this._instance ? this._instance : (this._instance = new NinePatchExtension());
+            return this._instance ? this._instance : (this._instance = new NinePatchImageExtension());
         }
 
         constructor() {
             super({
-                phaserTypeName: "NinePatch",
-                typeName: "NinePatch",
+                phaserTypeName: "NinePatchImage",
+                typeName: "NinePatchImage",
                 category: scene.SCENE_OBJECT_IMAGE_CATEGORY,
                 icon: NinePatchPlugin.getInstance().getIconDescriptor(ICON_NINEPATCH)
             });
@@ -25,17 +25,17 @@ namespace phasereditor2d.ninepatch {
             return new NinePatchCodeDOMBuilder();
         }
 
-        protected newObject(scene: scene.ui.Scene, x: number, y: number, key?: string, frame?: string): NinePatch {
+        protected newObject(scene: scene.ui.Scene, x: number, y: number, key?: string, frame?: string): NinePatchImage {
 
             const w = 200;
             const h = 100;
 
             if (key) {
 
-                return new NinePatch(scene, x, y, w, h, key, frame);
+                return new NinePatchImage(scene, x, y, w, h, key, frame);
             }
 
-            return new NinePatch(scene, x, y, w, h);
+            return new NinePatchImage(scene, x, y, w, h);
         }
 
         adaptDataAfterTypeConversion(serializer: scene.core.json.Serializer, originalObject: sceneobjects.ISceneGameObject, extraData: any) {
