@@ -1,6 +1,6 @@
 {
   "name": "phasereditor2d-ninepatch-plugin",
-  "version": "1.1.0-alpha",
+  "version": "1.1.0-alpha.1",
   "description": "NinePatch plugin for Phaser Editor 2D.",
   "repository": "github:PhaserEditor2D/phasereditor2d-ninepatch-plugin",
   "keywords": [
