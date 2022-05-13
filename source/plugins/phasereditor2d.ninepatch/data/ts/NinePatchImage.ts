@@ -1,4 +1,4 @@
-// version: 1.1.0
+// version: 1.1.0-alpha
 
 class NinePatchImage extends Phaser.GameObjects.Image {
 
