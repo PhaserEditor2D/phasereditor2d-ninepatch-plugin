@@ -59,6 +59,8 @@ declare namespace phasereditor2d.ninepatch {
 }
 declare namespace phasereditor2d.ninepatch {
     const ICON_NINEPATCH = "ninepatch";
+    const ICON_NINEPATCH_IMAGE = "ninepatch-image";
+    const ICON_NINEPATCH_CONTAINER = "ninepatch-container";
     const CAT_NINEPATCH = "phasereditor2d.ninepatch.category";
     const CMD_CREATE_NINEPATCH_USER_FILES = "phasereditor2d.ninepatch.CreateNinePatchUserFiles";
     class NinePatchPlugin extends colibri.Plugin {

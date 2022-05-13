@@ -1,6 +1,8 @@
 namespace phasereditor2d.ninepatch {
 
     export const ICON_NINEPATCH = "ninepatch";
+    export const ICON_NINEPATCH_IMAGE = "ninepatch-image";
+    export const ICON_NINEPATCH_CONTAINER = "ninepatch-container";
     export const CAT_NINEPATCH = "phasereditor2d.ninepatch.category";
     export const CMD_CREATE_NINEPATCH_USER_FILES = "phasereditor2d.ninepatch.CreateNinePatchUserFiles";
 
@@ -30,7 +32,7 @@ namespace phasereditor2d.ninepatch {
             );
 
             reg.addExtension(colibri.ui.ide.IconLoaderExtension.withPluginFiles(this, [
-                ICON_NINEPATCH
+                ICON_NINEPATCH, ICON_NINEPATCH_IMAGE, ICON_NINEPATCH_CONTAINER
             ]));
 
             reg.addExtension(renderTexture.NinePatchRenderTextureExtension.getInstance());

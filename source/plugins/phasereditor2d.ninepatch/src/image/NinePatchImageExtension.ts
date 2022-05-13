@@ -16,7 +16,7 @@ namespace phasereditor2d.ninepatch.image {
                 phaserTypeName: "NinePatchImage",
                 typeName: "NinePatchImage",
                 category: scene.SCENE_OBJECT_IMAGE_CATEGORY,
-                icon: NinePatchPlugin.getInstance().getIconDescriptor(ICON_NINEPATCH)
+                icon: NinePatchPlugin.getInstance().getIconDescriptor(ICON_NINEPATCH_IMAGE)
             });
         }
 

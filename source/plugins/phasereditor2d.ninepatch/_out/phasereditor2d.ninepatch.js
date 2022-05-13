@@ -234,6 +234,8 @@ var phasereditor2d;
     var ninepatch;
     (function (ninepatch) {
         ninepatch.ICON_NINEPATCH = "ninepatch";
+        ninepatch.ICON_NINEPATCH_IMAGE = "ninepatch-image";
+        ninepatch.ICON_NINEPATCH_CONTAINER = "ninepatch-container";
         ninepatch.CAT_NINEPATCH = "phasereditor2d.ninepatch.category";
         ninepatch.CMD_CREATE_NINEPATCH_USER_FILES = "phasereditor2d.ninepatch.CreateNinePatchUserFiles";
         class NinePatchPlugin extends colibri.Plugin {
@@ -247,7 +249,7 @@ var phasereditor2d;
                 const VER = "1.0.6";
                 console.log(`%c %c phasereditor2d-ninepatch-plugin %c v${VER} %c %c https://github.com/PhaserEditor2D/phasereditor2d-ninepatch-plugin `, "background-color:brown", "background-color:#3f3f3f;color:whitesmoke", "background-color:orange;color:black", "background-color:brown", "background-color:silver");
                 reg.addExtension(colibri.ui.ide.IconLoaderExtension.withPluginFiles(this, [
-                    ninepatch.ICON_NINEPATCH
+                    ninepatch.ICON_NINEPATCH, ninepatch.ICON_NINEPATCH_IMAGE, ninepatch.ICON_NINEPATCH_CONTAINER
                 ]));
                 reg.addExtension(ninepatch.renderTexture.NinePatchRenderTextureExtension.getInstance());
                 reg.addExtension(ninepatch.image.NinePatchImageExtension.getInstance());
@@ -503,7 +505,7 @@ var phasereditor2d;
                         phaserTypeName: "NinePatchImage",
                         typeName: "NinePatchImage",
                         category: phasereditor2d.scene.SCENE_OBJECT_IMAGE_CATEGORY,
-                        icon: ninepatch.NinePatchPlugin.getInstance().getIconDescriptor(ninepatch.ICON_NINEPATCH)
+                        icon: ninepatch.NinePatchPlugin.getInstance().getIconDescriptor(ninepatch.ICON_NINEPATCH_IMAGE)
                     });
                 }
                 static getInstance() {
