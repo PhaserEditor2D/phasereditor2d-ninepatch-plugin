@@ -22,7 +22,7 @@ namespace phasereditor2d.ninepatch.renderTexture {
 
         getCodeDOMBuilder(): scene.ui.sceneobjects.GameObjectCodeDOMBuilder {
 
-            return new NinePatchCodeDOMBuilder();
+            return new NinePatchCodeDOMBuilder("ninePatch");
         }
 
         protected newObject(scene: scene.ui.Scene, x: number, y: number, key?: string, frame?: string): NinePatchRenderTexture {
@@ -42,8 +42,8 @@ namespace phasereditor2d.ninepatch.renderTexture {
 
             if ("width" in originalObject && "height" in originalObject) {
 
-                serializer.write("width", originalObject["width"], 100);
-                serializer.write("height", originalObject["height"], 200);
+                serializer.write("width", originalObject["width"]);
+                serializer.write("height", originalObject["height"]);
             }
         }
     }

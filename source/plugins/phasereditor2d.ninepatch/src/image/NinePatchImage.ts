@@ -13,13 +13,15 @@ namespace phasereditor2d.ninepatch.image {
         private _marginTop = 20;
         private _marginRight = 20;
         private _marginBottom = 20;
+        private _hashKey: string;
         textureKey: string;
         textureFrame: string | number;
 
         constructor(scene: scene.ui.Scene, x: number, y: number, width: number, height: number, key?: string, frame?: string | number) {
             super(scene, x, y, key, frame);
 
-            this.setSize(width, height);
+            this.width = width;
+            this.height = height;
 
             this.textureKey = key;
             this.textureFrame = frame;
@@ -42,7 +44,7 @@ namespace phasereditor2d.ninepatch.image {
         private redraw() {
 
             const hashKey =  [
-                "NinePatchImage",
+                "!NinePatchImage",
                 this.width,
                 this.height,
                 this.marginLeft,
@@ -54,7 +56,11 @@ namespace phasereditor2d.ninepatch.image {
                 this.textureFrame,
             ].join(",");
 
-            if (!this.scene.textures.exists(hashKey)) {
+            if (this.scene.textures.exists(hashKey)) {
+                
+                // console.log(`NinePatchImage.getFromCache(${hashKey})`);
+
+            } else {
 
                 // console.log(`NinePatchImage.generateTexture(${hashKey})`);
 
@@ -78,10 +84,46 @@ namespace phasereditor2d.ninepatch.image {
             }
 
             this._settingCacheTexture = true;
+            this._hashKey = hashKey;
             this.setTexture(hashKey);
             this._settingCacheTexture = false;
 
             this._dirty = false;
+
+            this.collectGarbage();
+        }
+
+        private collectGarbage() {
+             
+            console.log("collecting garbage");
+
+            const scene = this.scene as scene.ui.Scene;
+            
+            const usedTexture = new Set();
+
+            scene.visitAll(obj => {
+
+                const support = NinePatchImageEditorSupport.getEditorSupport(obj);
+
+                if (support) {
+
+                    const ninePatch = obj as NinePatchImage;
+                    usedTexture.add(ninePatch._hashKey);
+                }
+            });
+
+            for(const key of scene.textures.getTextureKeys()) {
+
+                if (key.startsWith("!NinePatchImage")) {
+
+                    if (!usedTexture.has(key)) {
+
+                        console.log("destroy " + key);
+
+                        scene.textures.remove(key);
+                    }
+                }
+            }
         }
 
         setTexture(key: string, frame?: string | number): this {
@@ -99,9 +141,9 @@ namespace phasereditor2d.ninepatch.image {
 
         setSize(width: number, height: number): this {
 
-            super.setSize(width, height);
+            this._dirty = this.width !== width || this.height !== height;
 
-            this.redraw();
+            super.setSize(width, height);
 
             return this;
         }

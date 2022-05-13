@@ -78,9 +78,6 @@ var phasereditor2d;
         var code = phasereditor2d.scene.core.code;
         var sceneobjects = phasereditor2d.scene.ui.sceneobjects;
         class NinePatchCodeDOMBuilder extends sceneobjects.BaseImageCodeDOMBuilder {
-            constructor() {
-                super("ninePatch");
-            }
             buildCreatePrefabInstanceCodeDOM(args) {
                 const obj = args.obj;
                 const support = obj.getEditorSupport();
@@ -108,8 +105,10 @@ var phasereditor2d;
                 this.buildPrefabConstructorDeclarationSupperCallCodeDOM_TextureParameters(args, call);
             }
             buildCreateObjectWithFactoryCodeDOM(args) {
+                // TODO: we should set _factoryMethodName protected or create a public getter.
+                const factory = this["_factoryMethodName"];
                 const obj = args.obj;
-                const call = new code.MethodCallCodeDOM("ninePatch", args.gameObjectFactoryExpr);
+                const call = new code.MethodCallCodeDOM(factory, args.gameObjectFactoryExpr);
                 call.argFloat(obj.x);
                 call.argFloat(obj.y);
                 call.argFloat(obj.width);
@@ -133,6 +132,8 @@ var phasereditor2d;
                     const ext = this.getExt(spec);
                     this.addResource(spec + "/NinePatch", "data/" + spec + "/NinePatch." + ext);
                     this.addResource(spec + "/registerNinePatchFactory", "data/" + spec + "/registerNinePatchFactory." + ext);
+                    this.addResource(spec + "/NinePatchImage", "data/" + spec + "/NinePatchImage." + ext);
+                    this.addResource(spec + "/registerNinePatchImageFactory", "data/" + spec + "/registerNinePatchImageFactory." + ext);
                 }
                 this.addResource("ninepatch.d.ts", "data/ninepatch.d.ts");
             }
@@ -165,13 +166,15 @@ var phasereditor2d;
                     dlg.create();
                     dlg.setTitle("Create NinePatch API Files");
                     const monitor = new controls.dialogs.ProgressDialogMonitor(dlg);
-                    monitor.addTotal(3);
+                    monitor.addTotal(5);
                     const newFiles = [];
                     const ext = this.getExt(spec);
-                    newFiles.push(await this.createFile(spec + "/NinePatch", folder, "NinePatch." + ext));
-                    monitor.step();
-                    newFiles.push(await this.createFile(spec + "/registerNinePatchFactory", folder, "registerNinePatchFactory." + ext));
-                    monitor.step();
+                    for (const type of ["NinePatch", "NinePatchImage"]) {
+                        newFiles.push(await this.createFile(spec + `/${type}`, folder, type + "." + ext));
+                        monitor.step();
+                        newFiles.push(await this.createFile(spec + `/register${type}Factory`, folder, `register${type}Factory.${ext}`));
+                        monitor.step();
+                    }
                     newFiles.push(await this.createFile("ninepatch.d.ts", folder, "ninepatch.d.ts"));
                     monitor.step();
                     dlg.close();
@@ -333,7 +336,8 @@ var phasereditor2d;
                     this._marginTop = 20;
                     this._marginRight = 20;
                     this._marginBottom = 20;
-                    this.setSize(width, height);
+                    this.width = width;
+                    this.height = height;
                     this.textureKey = key;
                     this.textureFrame = frame;
                     this._editorSupport = new image.NinePatchImageEditorSupport(this, scene);
@@ -347,7 +351,7 @@ var phasereditor2d;
                 }
                 redraw() {
                     const hashKey = [
-                        "NinePatchImage",
+                        "!NinePatchImage",
                         this.width,
                         this.height,
                         this.marginLeft,
@@ -358,7 +362,10 @@ var phasereditor2d;
                         this.textureKey,
                         this.textureFrame,
                     ].join(",");
-                    if (!this.scene.textures.exists(hashKey)) {
+                    if (this.scene.textures.exists(hashKey)) {
+                        // console.log(`NinePatchImage.getFromCache(${hashKey})`);
+                    }
+                    else {
                         // console.log(`NinePatchImage.generateTexture(${hashKey})`);
                         const rt = new Phaser.GameObjects.RenderTexture(this.scene, 0, 0, this.width, this.height);
                         const brush = new Phaser.GameObjects.TileSprite(this.scene, 0, 0, this.width, this.height, this.textureKey, this.textureFrame);
@@ -376,9 +383,31 @@ var phasereditor2d;
                         rt.saveTexture(hashKey);
                     }
                     this._settingCacheTexture = true;
+                    this._hashKey = hashKey;
                     this.setTexture(hashKey);
                     this._settingCacheTexture = false;
                     this._dirty = false;
+                    this.collectGarbage();
+                }
+                collectGarbage() {
+                    console.log("collecting garbage");
+                    const scene = this.scene;
+                    const usedTexture = new Set();
+                    scene.visitAll(obj => {
+                        const support = image.NinePatchImageEditorSupport.getEditorSupport(obj);
+                        if (support) {
+                            const ninePatch = obj;
+                            usedTexture.add(ninePatch._hashKey);
+                        }
+                    });
+                    for (const key of scene.textures.getTextureKeys()) {
+                        if (key.startsWith("!NinePatchImage")) {
+                            if (!usedTexture.has(key)) {
+                                console.log("destroy " + key);
+                                scene.textures.remove(key);
+                            }
+                        }
+                    }
                 }
                 setTexture(key, frame) {
                     if (!this._settingCacheTexture) {
@@ -389,8 +418,8 @@ var phasereditor2d;
                     return super.setTexture(key, frame);
                 }
                 setSize(width, height) {
+                    this._dirty = this.width !== width || this.height !== height;
                     super.setSize(width, height);
-                    this.redraw();
                     return this;
                 }
                 set drawCenter(drawCenter) {
@@ -481,7 +510,7 @@ var phasereditor2d;
                     return this._instance ? this._instance : (this._instance = new NinePatchImageExtension());
                 }
                 getCodeDOMBuilder() {
-                    return new ninepatch.NinePatchCodeDOMBuilder();
+                    return new ninepatch.NinePatchCodeDOMBuilder("ninePatchImage");
                 }
                 newObject(scene, x, y, key, frame) {
                     const w = 200;
@@ -493,8 +522,8 @@ var phasereditor2d;
                 }
                 adaptDataAfterTypeConversion(serializer, originalObject, extraData) {
                     if ("width" in originalObject && "height" in originalObject) {
-                        serializer.write("width", originalObject["width"], 100);
-                        serializer.write("height", originalObject["height"], 200);
+                        serializer.write("width", originalObject["width"]);
+                        serializer.write("height", originalObject["height"]);
                     }
                 }
             }
@@ -651,7 +680,7 @@ var phasereditor2d;
                     return this._instance ? this._instance : (this._instance = new NinePatchRenderTextureExtension());
                 }
                 getCodeDOMBuilder() {
-                    return new ninepatch.NinePatchCodeDOMBuilder();
+                    return new ninepatch.NinePatchCodeDOMBuilder("ninePatch");
                 }
                 newObject(scene, x, y, key, frame) {
                     const w = 200;
@@ -663,8 +692,8 @@ var phasereditor2d;
                 }
                 adaptDataAfterTypeConversion(serializer, originalObject, extraData) {
                     if ("width" in originalObject && "height" in originalObject) {
-                        serializer.write("width", originalObject["width"], 100);
-                        serializer.write("height", originalObject["height"], 200);
+                        serializer.write("width", originalObject["width"]);
+                        serializer.write("height", originalObject["height"]);
                     }
                 }
             }

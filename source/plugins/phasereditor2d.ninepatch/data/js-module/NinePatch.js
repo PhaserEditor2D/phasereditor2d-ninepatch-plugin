@@ -1,4 +1,4 @@
-// version: 1.0.6
+// version: 1.1.0
 import Phaser from "phaser";
 export default class NinePatch extends Phaser.GameObjects.RenderTexture {
     textureKey;
@@ -95,5 +95,6 @@ export default class NinePatch extends Phaser.GameObjects.RenderTexture {
         this.textureKey = key;
         this.textureFrame = frame;
         this.redraw();
+        return this;
     }
 }

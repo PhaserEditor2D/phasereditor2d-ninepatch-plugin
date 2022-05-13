@@ -20,6 +20,9 @@ namespace phasereditor2d.ninepatch {
 
                 this.addResource(spec + "/NinePatch", "data/" + spec + "/NinePatch." + ext);
                 this.addResource(spec + "/registerNinePatchFactory", "data/" + spec + "/registerNinePatchFactory." + ext);
+
+                this.addResource(spec + "/NinePatchImage", "data/" + spec + "/NinePatchImage." + ext);
+                this.addResource(spec + "/registerNinePatchImageFactory", "data/" + spec + "/registerNinePatchImageFactory." + ext);
             }
 
             this.addResource("ninepatch.d.ts", "data/ninepatch.d.ts");
@@ -65,18 +68,22 @@ namespace phasereditor2d.ninepatch {
                 dlg.setTitle("Create NinePatch API Files");
 
                 const monitor = new controls.dialogs.ProgressDialogMonitor(dlg);
-                monitor.addTotal(3);
+                monitor.addTotal(5);
 
                 const newFiles = [];
 
                 const ext = this.getExt(spec);
 
-                newFiles.push(await this.createFile(spec + "/NinePatch", folder, "NinePatch." + ext));
-                monitor.step();
+                for (const type of ["NinePatch", "NinePatchImage"]) {
 
-                newFiles.push(await this.createFile(spec + "/registerNinePatchFactory", folder,
-                    "registerNinePatchFactory." + ext));
-                monitor.step();
+                    newFiles.push(await this.createFile(spec + `/${type}`, folder, type + "." + ext));
+                    monitor.step();
+
+                    newFiles.push(await this.createFile(spec + `/register${type}Factory`, folder,
+                        `register${type}Factory.${ext}`));
+                    monitor.step();
+                }
+
 
                 newFiles.push(await this.createFile("ninepatch.d.ts", folder, "ninepatch.d.ts"));
                 monitor.step();

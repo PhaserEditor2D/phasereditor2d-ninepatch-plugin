@@ -22,7 +22,7 @@ namespace phasereditor2d.ninepatch.image {
 
         getCodeDOMBuilder(): scene.ui.sceneobjects.GameObjectCodeDOMBuilder {
 
-            return new NinePatchCodeDOMBuilder();
+            return new NinePatchCodeDOMBuilder("ninePatchImage");
         }
 
         protected newObject(scene: scene.ui.Scene, x: number, y: number, key?: string, frame?: string): NinePatchImage {
@@ -42,8 +42,8 @@ namespace phasereditor2d.ninepatch.image {
 
             if ("width" in originalObject && "height" in originalObject) {
 
-                serializer.write("width", originalObject["width"], 100);
-                serializer.write("height", originalObject["height"], 200);
+                serializer.write("width", originalObject["width"]);
+                serializer.write("height", originalObject["height"]);
             }
         }
     }

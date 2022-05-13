@@ -5,10 +5,6 @@ namespace phasereditor2d.ninepatch {
 
     export class NinePatchCodeDOMBuilder extends sceneobjects.BaseImageCodeDOMBuilder {
 
-        constructor() {
-            super("ninePatch");
-        }
-
         buildCreatePrefabInstanceCodeDOM(args: sceneobjects.IBuildPrefabConstructorCodeDOMArgs) {
 
             const obj = args.obj as INinePatch;
@@ -54,8 +50,10 @@ namespace phasereditor2d.ninepatch {
 
         buildCreateObjectWithFactoryCodeDOM(args: sceneobjects.IBuildObjectFactoryCodeDOMArgs): code.MethodCallCodeDOM {
 
+            // TODO: we should set _factoryMethodName protected or create a public getter.
+            const factory = this["_factoryMethodName"];
             const obj = args.obj as INinePatch;
-            const call = new code.MethodCallCodeDOM("ninePatch", args.gameObjectFactoryExpr);
+            const call = new code.MethodCallCodeDOM(factory, args.gameObjectFactoryExpr);
 
             call.argFloat(obj.x);
             call.argFloat(obj.y);

@@ -28,7 +28,6 @@ declare namespace phasereditor2d.ninepatch {
     import code = scene.core.code;
     import sceneobjects = scene.ui.sceneobjects;
     class NinePatchCodeDOMBuilder extends sceneobjects.BaseImageCodeDOMBuilder {
-        constructor();
         buildCreatePrefabInstanceCodeDOM(args: sceneobjects.IBuildPrefabConstructorCodeDOMArgs): void;
         buildPrefabConstructorDeclarationCodeDOM(args: sceneobjects.IBuildPrefabConstructorDeclarationCodeDOM): void;
         buildPrefabConstructorDeclarationSupperCallCodeDOM(args: sceneobjects.IBuildPrefabConstructorDeclarationSupperCallCodeDOMArgs): void;
@@ -93,10 +92,12 @@ declare namespace phasereditor2d.ninepatch.image {
         private _marginTop;
         private _marginRight;
         private _marginBottom;
+        private _hashKey;
         textureKey: string;
         textureFrame: string | number;
         constructor(scene: scene.ui.Scene, x: number, y: number, width: number, height: number, key?: string, frame?: string | number);
         private redraw;
+        private collectGarbage;
         setTexture(key: string, frame?: string | number): this;
         setSize(width: number, height: number): this;
         set drawCenter(drawCenter: boolean);
