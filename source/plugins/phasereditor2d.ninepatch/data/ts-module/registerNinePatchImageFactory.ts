@@ -3,7 +3,7 @@
 import Phaser from "phaser";
 import NinePatchImage from "./NinePatchImage";
 
-export default function registerNinePatchFactory() {
+export default function registerNinePatchImageFactory() {
 
     Phaser.GameObjects.GameObjectFactory.register("ninePatchImage",
         function (this: Phaser.GameObjects.GameObjectFactory, x: number, y: number, width: number, height: number, key: string, frame?: string | number) {

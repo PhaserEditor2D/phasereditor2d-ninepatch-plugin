@@ -1,6 +1,7 @@
 namespace phasereditor2d.ninepatch {
 
     import controls = colibri.ui.controls;
+    const NINEPATCH_TYPES =["NinePatch", "NinePatchImage", "NinePatchContainer"];
 
     export class NinePatchCodeResources extends scene.core.code.CodeResources {
 
@@ -18,11 +19,11 @@ namespace phasereditor2d.ninepatch {
 
                 const ext = this.getExt(spec);
 
-                this.addResource(spec + "/NinePatch", "data/" + spec + "/NinePatch." + ext);
-                this.addResource(spec + "/registerNinePatchFactory", "data/" + spec + "/registerNinePatchFactory." + ext);
+                for(const type of NINEPATCH_TYPES) {
 
-                this.addResource(spec + "/NinePatchImage", "data/" + spec + "/NinePatchImage." + ext);
-                this.addResource(spec + "/registerNinePatchImageFactory", "data/" + spec + "/registerNinePatchImageFactory." + ext);
+                    this.addResource(`${spec}/${type}`, `data/${spec}/${type}.${ext}`);
+                    this.addResource(`${spec}/register${type}Factory`, `data/${spec}/register${type}Factory.${ext}`);
+                }
             }
 
             this.addResource("ninepatch.d.ts", "data/ninepatch.d.ts");
@@ -68,13 +69,13 @@ namespace phasereditor2d.ninepatch {
                 dlg.setTitle("Create NinePatch API Files");
 
                 const monitor = new controls.dialogs.ProgressDialogMonitor(dlg);
-                monitor.addTotal(5);
+                monitor.addTotal(NINEPATCH_TYPES.length * 2 + 1);
 
                 const newFiles = [];
 
                 const ext = this.getExt(spec);
 
-                for (const type of ["NinePatch", "NinePatchImage"]) {
+                for (const type of NINEPATCH_TYPES) {
 
                     newFiles.push(await this.createFile(spec + `/${type}`, folder, type + "." + ext));
                     monitor.step();
@@ -83,7 +84,6 @@ namespace phasereditor2d.ninepatch {
                         `register${type}Factory.${ext}`));
                     monitor.step();
                 }
-
 
                 newFiles.push(await this.createFile("ninepatch.d.ts", folder, "ninepatch.d.ts"));
                 monitor.step();

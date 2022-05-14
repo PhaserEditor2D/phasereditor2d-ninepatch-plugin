@@ -22,11 +22,20 @@ interface NinePatchImage extends Phaser.GameObjects.Image, INinePatch {
 
 }
 
+interface NinePatchContainer extends Phaser.GameObjects.Container, INinePatch {
+
+    ninePatchContainterTintFill: boolean;
+    ninePatchContainerTint: number;
+    ninePatchContainerOriginX: number;
+    ninePatchContainerOriginY: number;
+}
+
 declare namespace Phaser.GameObjects {
 
     export interface GameObjectFactory {
 
-        ninePatch(x: number, y: number, width: number, height: number, key?: string, frame?: string | number): NinePatch;
-        ninePatchImage(x: number, y: number, width: number, height: number, key?: string, frame?: string | number): NinePatchImage;
+        ninePatch(x: number, y: number, width: number, height: number, key: string, frame?: string | number): NinePatch;
+        ninePatchImage(x: number, y: number, width: number, height: number, key: string, frame?: string | number): NinePatchImage;
+        ninePatchContainer(x: number, y: number, width: number, height: number, key: string, frame?: string | number): NinePatchContainer;
     }
 }
