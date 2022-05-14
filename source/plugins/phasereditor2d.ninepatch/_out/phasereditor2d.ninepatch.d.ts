@@ -82,6 +82,105 @@ declare namespace phasereditor2d.ninepatch {
         createMenu(menu: controls.Menu): void;
     }
 }
+declare namespace phasereditor2d.ninepatch.container {
+    import sceneobjects = scene.ui.sceneobjects;
+    class NinePatchContainer extends Phaser.GameObjects.Container implements INinePatch, sceneobjects.ISceneGameObject {
+        private static readonly __BASE;
+        private _editorSupport;
+        private _dirty;
+        private _updateListener;
+        private _drawCenter;
+        private _marginLeft;
+        private _marginTop;
+        private _marginRight;
+        private _marginBottom;
+        private _ninePatchContainerOriginX;
+        private _ninePatchContainerOriginY;
+        textureKey: string;
+        textureFrame: string | number;
+        private _ninePatchContainerTint;
+        private _ninePatchContainerTintFill;
+        private _originTexture;
+        private _originFrame;
+        private textureXs;
+        private textureYs;
+        constructor(scene: scene.ui.Scene, x: number, y: number, width: number, height: number, key?: string, frame?: string | number);
+        private redraw;
+        private createPatches;
+        private drawPatches;
+        private createPatchFrame;
+        private getPatchNameByPosition;
+        setTexture(key: string, frame?: string | number): this;
+        setSize(width: number, height: number): this;
+        setContainerOrigin(x: number, y: number): void;
+        updateDisplayOrigin(): void;
+        set ninePatchContainerTintFill(fill: boolean);
+        get ninePatchContainerTintFill(): boolean;
+        set ninePatchContainerTint(tint: number);
+        get ninePatchContainerTint(): number;
+        set ninePatchContainerOriginX(originX: number);
+        get ninePatchContainerOriginX(): number;
+        set ninePatchContainerOriginY(originY: number);
+        get ninePatchContainerOriginY(): number;
+        set drawCenter(drawCenter: boolean);
+        get drawCenter(): boolean;
+        set marginLeft(marginLeft: number);
+        get marginLeft(): number;
+        set marginTop(marginTop: number);
+        get marginTop(): number;
+        set marginRight(marginRight: number);
+        get marginRight(): number;
+        set marginBottom(marginBottom: number);
+        get marginBottom(): number;
+        destroy(): void;
+        getEditorSupport(): NinePatchContainerEditorSupport;
+    }
+}
+declare namespace phasereditor2d.ninepatch.container {
+    import sceneobjects = scene.ui.sceneobjects;
+    class NinePatchContainerComponent extends sceneobjects.Component<NinePatchContainer> {
+        static ninePatchContainerOriginX: sceneobjects.IProperty<any>;
+        static ninePatchContainerOriginY: sceneobjects.IProperty<any>;
+        static ninePatchContainerTintFill: sceneobjects.IProperty<any>;
+        static ninePatchContainerTint: sceneobjects.IProperty<any>;
+        constructor(obj: NinePatchContainer);
+        buildSetObjectPropertiesCodeDOM(args: scene.ui.sceneobjects.ISetObjectPropertiesCodeDOMArgs): void;
+    }
+}
+declare namespace phasereditor2d.ninepatch.container {
+    import sceneobjects = scene.ui.sceneobjects;
+    class NinePatchContainerEditorSupport extends sceneobjects.GameObjectEditorSupport<NinePatchContainer> {
+        constructor(obj: NinePatchContainer, scene: phasereditor2d.scene.ui.Scene);
+        getCellRenderer(): colibri.ui.controls.viewers.ICellRenderer;
+        setInteractive(): void;
+        computeOrigin(): {
+            originX: number;
+            originY: number;
+        };
+    }
+}
+declare namespace phasereditor2d.ninepatch.container {
+    import sceneobjects = scene.ui.sceneobjects;
+    class NinePatchContainerExtension extends scene.ui.sceneobjects.BaseImageExtension {
+        private static _instance;
+        static getInstance(): NinePatchContainerExtension;
+        constructor();
+        getCodeDOMBuilder(): scene.ui.sceneobjects.GameObjectCodeDOMBuilder;
+        protected newObject(scene: scene.ui.Scene, x: number, y: number, key?: string, frame?: string): NinePatchContainer;
+        adaptDataAfterTypeConversion(serializer: scene.core.json.Serializer, originalObject: sceneobjects.ISceneGameObject, extraData: any): void;
+    }
+}
+declare namespace phasereditor2d.ninepatch.container {
+    import controls = colibri.ui.controls;
+    class NinePatchContainerSection extends scene.ui.sceneobjects.SceneGameObjectSection<INinePatch> {
+        static SECTION_ID: string;
+        constructor(page: controls.properties.PropertyPage);
+        createForm(parent: HTMLDivElement): void;
+        canEdit(obj: any, n: number): boolean;
+        canEditNumber(n: number): boolean;
+        getSectionHelpPath(): string;
+    }
+}
 declare namespace phasereditor2d.ninepatch.image {
     import sceneobjects = scene.ui.sceneobjects;
     class NinePatchImage extends Phaser.GameObjects.Image implements INinePatch, sceneobjects.ISceneGameObject {

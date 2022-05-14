@@ -95,8 +95,6 @@ namespace phasereditor2d.ninepatch.image {
 
         private collectGarbage() {
              
-            console.log("collecting garbage");
-
             const scene = this.scene as scene.ui.Scene;
             
             const usedTexture = new Set();

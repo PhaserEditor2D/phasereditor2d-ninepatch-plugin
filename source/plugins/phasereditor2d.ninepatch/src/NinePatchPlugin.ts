@@ -21,7 +21,7 @@ namespace phasereditor2d.ninepatch {
 
         registerExtensions(reg: colibri.ExtensionRegistry) {
 
-            const VER = "1.0.6";
+            const VER = "1.1.0";
 
             console.log(`%c %c phasereditor2d-ninepatch-plugin %c v${VER} %c %c https://github.com/PhaserEditor2D/phasereditor2d-ninepatch-plugin `,
                 "background-color:brown",
@@ -37,9 +37,11 @@ namespace phasereditor2d.ninepatch {
 
             reg.addExtension(renderTexture.NinePatchRenderTextureExtension.getInstance());
             reg.addExtension(image.NinePatchImageExtension.getInstance());
+            reg.addExtension(container.NinePatchContainerExtension.getInstance());
 
             reg.addExtension(new scene.ui.editor.properties.SceneEditorPropertySectionExtension(
                 page => new NinePatchSection(page),
+                page => new container.NinePatchContainerSection(page),
             ));
 
             reg.addExtension(new colibri.ui.ide.PluginResourceLoaderExtension(() =>
