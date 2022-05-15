@@ -82,6 +82,8 @@ const obj = new NinePatch(scene, 10, 10, 100, 100, "atlas", "green-button");
 scene.add.existing(obj);
 ```
 
+In addition to the `NinePatch.ts` file, the `NinePatchImage.ts` & `NinePatchContainer.ts` files are generated, with a similar format.
+
 ### `registerNinePatchFactory.ts`
 
 Contains the `registerNinePatchFactory()` function. 
@@ -100,6 +102,8 @@ const game = new Phaser.Game(...);
 registerNinePatchFactory();
 ...
 ```
+
+In addition to the `registerNinePatchFactory.ts` file, the `registerNinePatchImageFactory.ts` & `registerNinePatchContainerFactory.ts` files are generated, with a similar format.
 
 ### `ninepatch.d.ts`
 
@@ -127,8 +131,19 @@ registerNinePatchImageFactory();
 
 ### NinePatchContainer
 
-TODO
+The **NinePatchContainer** class extends the `Phaser.GameObjects.Container` class. The idea is to group the nine patches inside a container. This implementation has the advantage of a low memory consumption and a fast rendering. Each patch is an image with a frame of the main texture.
 
+I recommend this implementation if you need the nine-patch objects of your game have to change a lot.
+
+If you use the **NinePatchContainer** class in your game, you should register its factory like this:
+
+```javascript
+
+const game = new Phaser.Game(...);
+...
+registerNinePatchContainerFactory();
+...
+```
 
 ### Code customization
 
