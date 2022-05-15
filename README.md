@@ -133,7 +133,11 @@ registerNinePatchImageFactory();
 
 The **NinePatchContainer** class extends the `Phaser.GameObjects.Container` class. The idea is to group the nine patches inside a container. This implementation has the advantage of a low memory consumption and a fast rendering. Each patch is an image with a frame of the main texture.
 
-I recommend this implementation if you need the nine-patch objects of your game have to change a lot.
+I recommend this implementation if:
+
+* The ninepatch object's properties are changing a lot in your game.
+* The ninepatch objects have a huge size.
+* Basically, don't use this implementation if generating & caching textures is too expensive in terms of memory & processing.
 
 If you use the **NinePatchContainer** class in your game, you should register its factory like this:
 
