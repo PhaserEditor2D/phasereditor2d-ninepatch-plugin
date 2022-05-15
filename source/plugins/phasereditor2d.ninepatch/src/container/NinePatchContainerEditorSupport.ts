@@ -40,6 +40,19 @@ namespace phasereditor2d.ninepatch.container {
             });
         }
 
+        getOriginProperties(): sceneobjects.IProperty<sceneobjects.IOriginLikeObject>[] {
+
+            return [
+                NinePatchContainerComponent.ninePatchContainerOriginX,
+                NinePatchContainerComponent.ninePatchContainerOriginY
+            ];
+        }
+
+        getOriginSectionId(): string {
+            
+            return NinePatchContainerSection.SECTION_ID;
+        }
+
         computeOrigin(): { originX: number; originY: number; } {
 
             return {

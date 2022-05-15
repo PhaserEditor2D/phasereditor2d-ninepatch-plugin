@@ -162,6 +162,12 @@ namespace phasereditor2d.ninepatch.container {
             return this;
         }
 
+        setOrigin(originX: number, originY: number) {
+
+            this.ninePatchContainerOriginX = originX;
+            this.ninePatchContainerOriginY = originY;
+        }
+
         updateDisplayOrigin() {
             // for satisfying the API
         }
