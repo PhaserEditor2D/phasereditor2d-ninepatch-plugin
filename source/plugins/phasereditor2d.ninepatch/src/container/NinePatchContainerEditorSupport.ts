@@ -10,10 +10,11 @@ namespace phasereditor2d.ninepatch.container {
             super(NinePatchContainerExtension.getInstance(), obj, scene);
 
             this.addComponent(
-                new sceneobjects.TextureComponent(obj as unknown as sceneobjects.ITextureLikeObject),
-                new sceneobjects.TransformComponent(obj as unknown as sceneobjects.ITransformLikeObject),
-                new sceneobjects.FlipComponent(obj as unknown as sceneobjects.IFlipLikeObject),
-                new sceneobjects.VisibleComponent(obj as unknown as sceneobjects.IVisibleLikeObject),
+                new sceneobjects.TextureComponent(obj),
+                new sceneobjects.TransformComponent(obj),
+                new sceneobjects.FlipComponent(obj),
+                new sceneobjects.VisibleComponent(obj),
+                new sceneobjects.AlphaSingleComponent(obj),
                 new sceneobjects.SizeComponent(obj),
                 new NinePatchComponent(obj),
                 new NinePatchContainerComponent(obj));
@@ -50,7 +51,7 @@ namespace phasereditor2d.ninepatch.container {
         }
 
         getOriginSectionId(): string {
-            
+
             return NinePatchContainerSection.SECTION_ID;
         }
 
