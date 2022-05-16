@@ -11,6 +11,7 @@ interface INinePatch {
     drawCenter: boolean;
     setMargin(left: number, top: number, right: number, bottom: number): void;
     setTexture(key: string, frame?: string | number): this;
+    updateDisplayOrigin(): this;
     redraw(): void;
 }
 
