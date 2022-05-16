@@ -155,7 +155,7 @@ namespace phasereditor2d.ninepatch.container {
 
         setSize(width: number, height: number): this {
 
-            this._dirty = this.width !== width || this.height !== height;
+            this._dirty = this._dirty || this.width !== width || this.height !== height;
 
             super.setSize(width, height);
 
