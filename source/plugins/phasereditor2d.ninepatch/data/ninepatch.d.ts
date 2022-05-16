@@ -9,6 +9,8 @@ interface INinePatch {
     textureKey: string;
     textureFrame: string | number | undefined;
     drawCenter: boolean;
+    flipX: boolean;
+    flipY: boolean;
     setMargin(left: number, top: number, right: number, bottom: number): void;
     setTexture(key: string, frame?: string | number): this;
     updateDisplayOrigin(): this;

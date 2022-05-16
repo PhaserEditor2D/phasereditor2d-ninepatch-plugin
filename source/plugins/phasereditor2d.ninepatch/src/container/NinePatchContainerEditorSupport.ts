@@ -12,6 +12,7 @@ namespace phasereditor2d.ninepatch.container {
             this.addComponent(
                 new sceneobjects.TextureComponent(obj as unknown as sceneobjects.ITextureLikeObject),
                 new sceneobjects.TransformComponent(obj as unknown as sceneobjects.ITransformLikeObject),
+                new sceneobjects.FlipComponent(obj as unknown as sceneobjects.IFlipLikeObject),
                 new sceneobjects.VisibleComponent(obj as unknown as sceneobjects.IVisibleLikeObject),
                 new sceneobjects.SizeComponent(obj),
                 new NinePatchComponent(obj),

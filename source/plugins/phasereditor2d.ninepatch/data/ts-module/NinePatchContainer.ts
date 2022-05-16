@@ -70,8 +70,16 @@ export default class NinePatchContainer extends Phaser.GameObjects.Container {
         this.removeAll(true);
 
         // the positions we want from the object's size
-        const finalXs = [0, this.marginLeft, this.width - this.marginRight, this.width];
-        const finalYs = [0, this.marginTop, this.height - this.marginBottom, this.height];
+
+        const finalXs = this.flipX ?
+            [this.width - this.marginLeft, this.marginRight, 0]
+            : [0, this.marginLeft, this.width - this.marginRight];
+        const finalYs = this.flipY ?
+            [this.height - this.marginTop, this.marginBottom, 0]
+            : [0, this.marginTop, this.height - this.marginBottom, this.height];
+
+        const sizeXs = [this.marginLeft, this.width - this.marginLeft - this.marginRight, this.marginRight];
+        const sizeYs = [this.marginTop, this.height - this.marginTop - this.marginBottom, this.marginBottom];
 
         for (let row: number = 0; row < 3; row++) {
 
@@ -86,20 +94,20 @@ export default class NinePatchContainer extends Phaser.GameObjects.Container {
                 patchImg.setOrigin(0, 0);
 
                 patchImg.setPosition(
-                    finalXs[col] - this.width * this.ninePatchContainerOriginX,
-                    finalYs[row] - this.height * this.ninePatchContainerOriginY);
+                    finalXs[col] - this.width * this._ninePatchContainerOriginX,
+                    finalYs[row] - this.height * this._ninePatchContainerOriginY);
 
-                patchImg.setScale(
-                    (finalXs[col + 1] - finalXs[col]) / patch.width,
-                    (finalYs[row + 1] - finalYs[row]) / patch.height
-                );
+                patchImg.setDisplaySize(sizeXs[col], sizeYs[row]);
 
                 patchImg.visible = this.drawCenter || col !== 1 || row !== 1;
 
-                this.add(patchImg);
+                patchImg.flipX = this.flipX;
+                patchImg.flipY = this.flipY;
 
-                patchImg.tint = this.ninePatchContainerTint;
-                patchImg.tintFill = this.ninePatchContainerTintFill;
+                patchImg.tint = this._ninePatchContainerTint;
+                patchImg.tintFill = this._ninePatchContainerTintFill;
+
+                this.add(patchImg);
             }
         }
     }

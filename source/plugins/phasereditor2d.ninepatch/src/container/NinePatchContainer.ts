@@ -16,6 +16,8 @@ namespace phasereditor2d.ninepatch.container {
         private _marginBottom = 20;
         private _ninePatchContainerOriginX = 0.5;
         private _ninePatchContainerOriginY = 0.5;
+        private _flipX = false;
+        private _flipY = false;
         textureKey: string;
         textureFrame: string | number;
         private _ninePatchContainerTint = 0xffffff;
@@ -87,8 +89,16 @@ namespace phasereditor2d.ninepatch.container {
             this.removeAll(true);
 
             // the positions we want from the object's size
-            const finalXs = [0, this.marginLeft, this.width - this.marginRight, this.width];
-            const finalYs = [0, this.marginTop, this.height - this.marginBottom, this.height];
+
+            const finalXs = this.flipX ?
+                [this.width - this.marginLeft, this.marginRight, 0]
+                : [0, this.marginLeft, this.width - this.marginRight];
+            const finalYs = this.flipY ?
+                [this.height - this.marginTop, this.marginBottom, 0]
+                : [0, this.marginTop, this.height - this.marginBottom, this.height];
+
+            const sizeXs = [this.marginLeft, this.width - this.marginLeft - this.marginRight, this.marginRight];
+            const sizeYs = [this.marginTop, this.height - this.marginTop - this.marginBottom, this.marginBottom];
 
             for (let row: number = 0; row < 3; row++) {
 
@@ -106,17 +116,17 @@ namespace phasereditor2d.ninepatch.container {
                         finalXs[col] - this.width * this._ninePatchContainerOriginX,
                         finalYs[row] - this.height * this._ninePatchContainerOriginY);
 
-                    patchImg.setScale(
-                        (finalXs[col + 1] - finalXs[col]) / patch.width,
-                        (finalYs[row + 1] - finalYs[row]) / patch.height
-                    );
+                    patchImg.setDisplaySize(sizeXs[col], sizeYs[row]);
 
                     patchImg.visible = this.drawCenter || col !== 1 || row !== 1;
 
-                    this.add(patchImg);
+                    patchImg.flipX = this.flipX;
+                    patchImg.flipY = this.flipY;
 
                     patchImg.tint = this._ninePatchContainerTint;
                     patchImg.tintFill = this._ninePatchContainerTintFill;
+
+                    this.add(patchImg);
                 }
             }
         }
@@ -170,6 +180,30 @@ namespace phasereditor2d.ninepatch.container {
 
         updateDisplayOrigin() {
             // for satisfying the API
+        }
+
+        set flipX(flipX: boolean) {
+
+            this._dirty = this._dirty || flipX !== this._flipX;
+
+            this._flipX = flipX;
+        }
+
+        get flipX() {
+
+            return this._flipX;
+        }
+
+        set flipY(flipY: boolean) {
+
+            this._dirty = this._dirty || flipY !== this._flipY;
+
+            this._flipY = flipY;
+        }
+
+        get flipY() {
+
+            return this._flipY;
         }
 
         set ninePatchContainerTintFill(fill: boolean) {
