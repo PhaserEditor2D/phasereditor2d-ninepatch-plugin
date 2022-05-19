@@ -50,8 +50,7 @@ namespace phasereditor2d.ninepatch {
 
         buildCreateObjectWithFactoryCodeDOM(args: sceneobjects.IBuildObjectFactoryCodeDOMArgs): code.MethodCallCodeDOM {
 
-            // TODO: we should set _factoryMethodName protected or create a public getter.
-            const factory = this["_factoryMethodName"];
+            const factory = this.getFactoryMethodName();
             const obj = args.obj as INinePatch;
             const call = new code.MethodCallCodeDOM(factory, args.gameObjectFactoryExpr);
 
