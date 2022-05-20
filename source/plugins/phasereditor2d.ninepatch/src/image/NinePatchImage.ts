@@ -116,7 +116,7 @@ namespace phasereditor2d.ninepatch.image {
 
                     if (!usedTexture.has(key)) {
 
-                        console.log("destroy " + key);
+                        // console.log("destroy " + key);
 
                         scene.textures.remove(key);
                     }
