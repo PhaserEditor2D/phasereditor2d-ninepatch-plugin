@@ -49,32 +49,7 @@ namespace phasereditor2d.ninepatch {
                 NinePatchCodeResources.getInstance().preload()
             ));
 
-            reg.addExtension(new colibri.ui.ide.commands.CommandExtension(manager => {
-
-                manager.addCategory({
-                    id: CAT_NINEPATCH,
-                    name: "Nine Patch",
-                });
-
-                for (const spec of ["js", "js-module", "ts", "ts-module"]) {
-
-                    manager.add({
-                        command: {
-                            id: CMD_CREATE_NINEPATCH_USER_FILES + "." + spec,
-                            category: CAT_NINEPATCH,
-                            name: `Create Nine Patch User Files (${spec})`,
-                            tooltip: "Create the user files with the NinePatch API."
-                        },
-                        handler: {
-                            executeFunc: args => {
-
-                               NinePatchCodeResources.getInstance().createFiles(spec as any);
-                            }
-                        }
-                    });
-                }
-            }));
-
+            NinePatchCodeResources.getInstance().registerCommands(CAT_NINEPATCH, "Nine Patch", reg);
 
             // migrations
 
