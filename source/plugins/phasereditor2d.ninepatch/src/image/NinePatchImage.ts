@@ -5,17 +5,16 @@ namespace phasereditor2d.ninepatch.image {
     export class NinePatchImage extends Phaser.GameObjects.Image implements INinePatch, sceneobjects.ISceneGameObject {
 
         private _editorSupport: NinePatchImageEditorSupport;
-        private _dirty: boolean;
-        private _updateListener: () => void;
         private _settingCacheTexture = false;
-        private _drawCenter = true;
-        private _marginLeft = 20;
-        private _marginTop = 20;
-        private _marginRight = 20;
-        private _marginBottom = 20;
-        private _hashKey: string;
         textureKey: string;
-        textureFrame: string | number;
+        textureFrame: string | number | undefined;
+        drawCenter = true;
+        marginLeft = 20;
+        marginTop = 20;
+        marginRight = 20;
+        marginBottom = 20;
+        private _hashKey: string;
+        private _dirtyManager: sceneobjects.DirtyObjectManager;
 
         constructor(scene: scene.ui.Scene, x: number, y: number, width: number, height: number, key?: string, frame?: string | number) {
             super(scene, x, y, key, frame);
@@ -28,41 +27,27 @@ namespace phasereditor2d.ninepatch.image {
 
             this._editorSupport = new NinePatchImageEditorSupport(this, scene);
 
-            this._dirty = true;
+            this._dirtyManager = new sceneobjects.DirtyObjectManager(this);
 
-            this._updateListener = () => {
+            this._dirtyManager.addComponents(
+                NinePatchComponent,
+                sceneobjects.TextureComponent,
+                sceneobjects.SizeComponent);
 
-                if (this._dirty) {
-
-                    this.redraw();
-                }
-            };
-
-            this.scene.events.on("update", this._updateListener);
+            this._dirtyManager.start(() => this.redraw());
         }
 
         private redraw() {
 
-            const hashKey =  [
-                "!NinePatchImage",
-                this.width,
-                this.height,
-                this.marginLeft,
-                this.marginRight,
-                this.marginTop,
-                this.marginBottom,
-                this.drawCenter,
-                this.textureKey,
-                this.textureFrame,
-            ].join(",");
+            const hashKey = this._dirtyManager.getKey();
 
             if (this.scene.textures.exists(hashKey)) {
-                
-                // console.log(`NinePatchImage.getFromCache(${hashKey})`);
+
+                console.log(`NinePatchImage.getFromCache(${hashKey})`);
 
             } else {
 
-                // console.log(`NinePatchImage.generateTexture(${hashKey})`);
+                console.log(`NinePatchImage.generateTexture(${hashKey})`);
 
                 const rt = new Phaser.GameObjects.RenderTexture(this.scene, 0, 0, this.width, this.height);
                 const brush = new Phaser.GameObjects.TileSprite(this.scene, 0, 0, this.width, this.height, this.textureKey, this.textureFrame);
@@ -88,15 +73,13 @@ namespace phasereditor2d.ninepatch.image {
             this.setTexture(hashKey);
             this._settingCacheTexture = false;
 
-            this._dirty = false;
-
             this.collectGarbage();
         }
 
         private collectGarbage() {
-             
+
             const scene = this.scene as scene.ui.Scene;
-            
+
             const usedTexture = new Set();
 
             scene.visitAll(obj => {
@@ -110,9 +93,9 @@ namespace phasereditor2d.ninepatch.image {
                 }
             });
 
-            for(const key of scene.textures.getTextureKeys()) {
+            for (const key of scene.textures.getTextureKeys()) {
 
-                if (key.startsWith("!NinePatchImage")) {
+                if (key.startsWith("NinePatchImage[")) {
 
                     if (!usedTexture.has(key)) {
 
@@ -128,8 +111,6 @@ namespace phasereditor2d.ninepatch.image {
 
             if (!this._settingCacheTexture) {
 
-                this._dirty = this._dirty || key !== this.textureKey || frame !== this.textureFrame;
-
                 this.textureKey = key;
                 this.textureFrame = frame;
             }
@@ -137,83 +118,7 @@ namespace phasereditor2d.ninepatch.image {
             return super.setTexture(key, frame);
         }
 
-        setSize(width: number, height: number): this {
-
-            this._dirty = this.width !== width || this.height !== height;
-
-            super.setSize(width, height);
-
-            return this;
-        }
-
-        set drawCenter(drawCenter: boolean) {
-
-            this._dirty = this._dirty || drawCenter !== this._drawCenter;
-
-            this._drawCenter = drawCenter;
-        }
-
-        get drawCenter() {
-
-            return this._drawCenter;
-        }
-
-        set marginLeft(marginLeft: number) {
-
-            this._dirty = this._dirty || marginLeft !== this._marginLeft;
-
-            this._marginLeft = marginLeft;
-        }
-
-        get marginLeft() {
-
-            return this._marginLeft;
-        }
-
-        set marginTop(marginTop: number) {
-
-            this._dirty = this._dirty || marginTop !== this._marginTop;
-
-            this._marginTop = marginTop;
-        }
-
-        get marginTop() {
-
-            return this._marginTop;
-        }
-
-        set marginRight(marginRight: number) {
-
-            this._dirty = this._dirty || marginRight !== this._marginRight;
-
-            this._marginRight = marginRight;
-        }
-
-        get marginRight() {
-
-            return this._marginRight;
-        }
-
-        set marginBottom(marginBottom: number) {
-
-            this._dirty = this._dirty || marginBottom !== this._marginBottom;
-
-            this._marginBottom = marginBottom;
-        }
-
-        get marginBottom() {
-
-            return this._marginBottom;
-        }
-
-        destroy() {
-
-            this.scene?.events?.removeListener("update", this._updateListener);
-
-            super.destroy();
-        }
-
-        getEditorSupport(): sceneobjects.GameObjectEditorSupport<sceneobjects.ISceneGameObject> {
+        getEditorSupport() {
 
             return this._editorSupport;
         }
