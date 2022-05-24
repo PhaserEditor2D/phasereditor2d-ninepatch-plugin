@@ -1,3 +1,8 @@
+## v1.2.0
+
+* Adds the new NinePatchImage and NinePatchContainer game objects.
+* Shows the help of the ninepatch game object in the Inspector view.
+
 ## v1.1.0 - Mar 6, 2022
 
 * Fixes default origin on the NinePatch editor support (0, 0).

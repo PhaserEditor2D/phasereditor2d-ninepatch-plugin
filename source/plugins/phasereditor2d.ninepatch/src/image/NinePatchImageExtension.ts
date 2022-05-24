@@ -5,6 +5,7 @@ namespace phasereditor2d.ninepatch.image {
     export class NinePatchImageExtension extends scene.ui.sceneobjects.BaseImageExtension {
 
         private static _instance: NinePatchImageExtension;
+        private _help: string;
 
         static getInstance() {
 
@@ -18,6 +19,16 @@ namespace phasereditor2d.ninepatch.image {
                 category: scene.SCENE_OBJECT_IMAGE_CATEGORY,
                 icon: NinePatchPlugin.getInstance().getIconDescriptor(ICON_NINEPATCH_IMAGE)
             });
+
+            this._help = ["**NinePatchImage**", 
+            "The **NinePatchImage** class extends the `Phaser.GameObjects.Image` class. The idea is to draw the nine-patch in a texture and set this texture to the image object. It saves the generated texture in the textures cache, so if different objects share the same nine-patch properties (like margins), they will use the same texture from the cache.", 
+            "Generating a new texture for an **NinePatchImage** object is expensive, but if you have a lot of nine-patch objects with the same properties, the dynamically generated texture is cached and generated once. This may boost the performance of your game and could be a much better alternative to the **NinePatch** class.",
+            "If you use the **NinePatchImage** class in your game, you should register its factory when you create the game instance: `registerNinePatchImageFactory();`"].join("\n\n");
+        }
+
+        getHelp() {
+            
+            return this._help;
         }
 
         getCodeDOMBuilder(): scene.ui.sceneobjects.GameObjectCodeDOMBuilder {

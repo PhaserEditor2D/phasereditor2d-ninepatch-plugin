@@ -5,6 +5,7 @@ namespace phasereditor2d.ninepatch.renderTexture {
     export class NinePatchRenderTextureExtension extends scene.ui.sceneobjects.BaseImageExtension {
 
         private static _instance: NinePatchRenderTextureExtension;
+        private _help: string;
 
         static getInstance() {
 
@@ -18,6 +19,17 @@ namespace phasereditor2d.ninepatch.renderTexture {
                 category: scene.SCENE_OBJECT_IMAGE_CATEGORY,
                 icon: NinePatchPlugin.getInstance().getIconDescriptor(ICON_NINEPATCH)
             });
+
+            this._help = [
+                "**NinePatch**",
+                "An implementation of a nine-patch object. It extends the `Phaser.GameObjects.RenderTexture`.",
+                "If you use the **NinePatch** class in your game, you should register its factory when you create the game instance: `registerNinePatchFactory();`"
+            ].join("\n\n");
+        }
+
+        getHelp() {
+            
+            return this._help;
         }
 
         getCodeDOMBuilder(): scene.ui.sceneobjects.GameObjectCodeDOMBuilder {

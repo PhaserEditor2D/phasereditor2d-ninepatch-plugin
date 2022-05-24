@@ -5,6 +5,7 @@ namespace phasereditor2d.ninepatch.container {
     export class NinePatchContainerExtension extends scene.ui.sceneobjects.BaseImageExtension {
 
         private static _instance: NinePatchContainerExtension;
+        private _help: string;
 
         static getInstance() {
 
@@ -18,6 +19,17 @@ namespace phasereditor2d.ninepatch.container {
                 category: scene.SCENE_OBJECT_IMAGE_CATEGORY,
                 icon: NinePatchPlugin.getInstance().getIconDescriptor(ICON_NINEPATCH_CONTAINER)
             });
+            
+            this._help = [
+                "**NinePatchContainer**",
+                "The **NinePatchContainer** class extends the `Phaser.GameObjects.Container` class. The idea is to group the nine patches inside a container. This implementation has the advantage of a low memory consumption and a fast rendering. Each patch is an image with a frame of the main texture.",
+                "If you use the **NinePatchContainer** class in your game, you should register its factory when you create the game instance: `registerNinePatchContainerFactory();`"
+            ].join("\n\n");
+        }
+
+        getHelp() {
+            
+            return this._help;
         }
 
         getCodeDOMBuilder(): scene.ui.sceneobjects.GameObjectCodeDOMBuilder {
