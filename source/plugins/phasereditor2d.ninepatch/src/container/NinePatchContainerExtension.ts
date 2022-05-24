@@ -42,12 +42,7 @@ namespace phasereditor2d.ninepatch.container {
             const w = 200;
             const h = 100;
 
-            if (key) {
-
-                return new NinePatchContainer(scene, x, y, w, h, key, frame);
-            }
-
-            return new NinePatchContainer(scene, x, y, w, h);
+            return new NinePatchContainer(scene, x, y, w, h, key ?? "__MISSING", frame);
         }
 
         adaptDataAfterTypeConversion(serializer: scene.core.json.Serializer, originalObject: sceneobjects.ISceneGameObject, extraData: any) {

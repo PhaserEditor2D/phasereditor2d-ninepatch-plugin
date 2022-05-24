@@ -7,25 +7,26 @@ namespace phasereditor2d.ninepatch.container {
         private static readonly __BASE: string = "__BASE";
 
         private _editorSupport: NinePatchContainerEditorSupport;
-        private _dirty: boolean;
-        private _updateListener: () => void;
-        private _drawCenter = true;
-        private _marginLeft = 20;
-        private _marginTop = 20;
-        private _marginRight = 20;
-        private _marginBottom = 20;
-        private _ninePatchContainerOriginX = 0.5;
-        private _ninePatchContainerOriginY = 0.5;
-        private _flipX = false;
-        private _flipY = false;
+
+        drawCenter = true;
+        marginLeft = 20;
+        marginTop = 20;
+        marginRight = 20;
+        marginBottom = 20;
+        ninePatchContainerOriginX = 0.5;
+        ninePatchContainerOriginY = 0.5;
         textureKey: string;
         textureFrame: string | number;
-        private _ninePatchContainerTint = 0xffffff;
-        private _ninePatchContainerTintFill = false;
+        ninePatchContainerTint = 0xffffff;
+        ninePatchContainerTintFill = false;
+        flipX = false;
+        flipY = false;
+
         private _originTexture: Phaser.Textures.Texture;
         private _originFrame: Phaser.Textures.Frame;
-        private textureXs: number[];
-        private textureYs: number[];
+        private _textureXs: number[];
+        private _textureYs: number[];
+        private _dirtyManager: sceneobjects.DirtyObjectManager;
 
         constructor(scene: scene.ui.Scene, x: number, y: number, width: number, height: number, key?: string, frame?: string | number) {
             super(scene, x, y);
@@ -38,31 +39,27 @@ namespace phasereditor2d.ninepatch.container {
 
             this._editorSupport = new NinePatchContainerEditorSupport(this, scene);
 
-            this._dirty = true;
+            this._dirtyManager = new sceneobjects.DirtyObjectManager(this);
+            
+            this._dirtyManager.addComponents(
+                NinePatchComponent,
+                NinePatchContainerComponent, 
+                sceneobjects.TextureComponent,
+                sceneobjects.SizeComponent);
 
-            this._updateListener = () => {
-
-                if (this._dirty) {
-
-                    this.redraw();
-                }
-            };
-
-            this.scene.events.on("update", this._updateListener);
+            this._dirtyManager.start(() => this.redraw());
         }
 
         private redraw() {
 
             this._originTexture = this.scene.textures.get(this.textureKey);
             this._originFrame = (this._originTexture.frames as any)[this.textureFrame] || (this._originTexture.frames as any)[NinePatchContainer.__BASE];
-            this.textureXs = [0, this.marginLeft, this._originFrame.width - this.marginRight, this._originFrame.width];
-            this.textureYs = [0, this.marginTop, this._originFrame.height - this.marginBottom, this._originFrame.height];
+            this._textureXs = [0, this.marginLeft, this._originFrame.width - this.marginRight, this._originFrame.width];
+            this._textureYs = [0, this.marginTop, this._originFrame.height - this.marginBottom, this._originFrame.height];
 
             this.createPatches();
 
             this.drawPatches();
-
-            this._dirty = false;
         }
 
         private createPatches(): void {
@@ -75,10 +72,10 @@ namespace phasereditor2d.ninepatch.container {
 
                     this.createPatchFrame(
                         name,
-                        this.textureXs[col], // x
-                        this.textureYs[row], // y
-                        this.textureXs[col + 1] - this.textureXs[col], // width
-                        this.textureYs[row + 1] - this.textureYs[row] // height
+                        this._textureXs[col], // x
+                        this._textureYs[row], // y
+                        this._textureXs[col + 1] - this._textureXs[col], // width
+                        this._textureYs[row + 1] - this._textureYs[row] // height
                     );
                 }
             }
@@ -113,8 +110,8 @@ namespace phasereditor2d.ninepatch.container {
                     patchImg.setOrigin(0, 0);
 
                     patchImg.setPosition(
-                        finalXs[col] - this.width * this._ninePatchContainerOriginX,
-                        finalYs[row] - this.height * this._ninePatchContainerOriginY);
+                        finalXs[col] - this.width * this.ninePatchContainerOriginX,
+                        finalYs[row] - this.height * this.ninePatchContainerOriginY);
 
                     patchImg.setDisplaySize(sizeXs[col], sizeYs[row]);
 
@@ -123,8 +120,8 @@ namespace phasereditor2d.ninepatch.container {
                     patchImg.flipX = this.flipX;
                     patchImg.flipY = this.flipY;
 
-                    patchImg.tint = this._ninePatchContainerTint;
-                    patchImg.tintFill = this._ninePatchContainerTintFill;
+                    patchImg.tint = this.ninePatchContainerTint;
+                    patchImg.tintFill = this.ninePatchContainerTintFill;
 
                     this.add(patchImg);
                 }
@@ -150,12 +147,10 @@ namespace phasereditor2d.ninepatch.container {
 
         private getPatchNameByPosition(row: number, col: number): string {
 
-            return `${this._originFrame.name}|${this.textureXs[col]}x${this.textureYs[row]}`;
+            return `${this._originFrame.name}|${this._textureXs[col]}x${this._textureYs[row]}`;
         }
 
         setTexture(key: string, frame?: string | number): this {
-
-            this._dirty = this._dirty || key !== this.textureKey || frame !== this.textureFrame;
 
             this.textureKey = key;
             this.textureFrame = frame;
@@ -164,8 +159,6 @@ namespace phasereditor2d.ninepatch.container {
         }
 
         setSize(width: number, height: number): this {
-
-            this._dirty = this._dirty || this.width !== width || this.height !== height;
 
             super.setSize(width, height);
 
@@ -180,145 +173,6 @@ namespace phasereditor2d.ninepatch.container {
 
         updateDisplayOrigin() {
             // for satisfying the API
-        }
-
-        set flipX(flipX: boolean) {
-
-            this._dirty = this._dirty || flipX !== this._flipX;
-
-            this._flipX = flipX;
-        }
-
-        get flipX() {
-
-            return this._flipX;
-        }
-
-        set flipY(flipY: boolean) {
-
-            this._dirty = this._dirty || flipY !== this._flipY;
-
-            this._flipY = flipY;
-        }
-
-        get flipY() {
-
-            return this._flipY;
-        }
-
-        set ninePatchContainerTintFill(fill: boolean) {
-
-            this._dirty = this._dirty || fill !== this._ninePatchContainerTintFill;
-
-            this._ninePatchContainerTintFill = fill;
-        }
-
-        get ninePatchContainerTintFill() {
-
-            return this._ninePatchContainerTintFill;
-        }
-
-        set ninePatchContainerTint(tint: number) {
-
-            this._dirty = this._dirty || tint !== this._ninePatchContainerTint;
-
-            this._ninePatchContainerTint = tint;
-        }
-
-        get ninePatchContainerTint() {
-
-            return this._ninePatchContainerTint;
-        }
-
-        set ninePatchContainerOriginX(originX: number) {
-
-            this._dirty = this._dirty || originX !== this._ninePatchContainerOriginX;
-
-            this._ninePatchContainerOriginX = originX;
-        }
-
-        get ninePatchContainerOriginX() {
-
-            return this._ninePatchContainerOriginX;
-        }
-
-        set ninePatchContainerOriginY(originY: number) {
-
-            this._dirty = this._dirty || originY !== this._ninePatchContainerOriginY;
-
-            this._ninePatchContainerOriginY = originY;
-        }
-
-        get ninePatchContainerOriginY() {
-
-            return this._ninePatchContainerOriginY;
-        }
-
-        set drawCenter(drawCenter: boolean) {
-
-            this._dirty = this._dirty || drawCenter !== this._drawCenter;
-
-            this._drawCenter = drawCenter;
-        }
-
-        get drawCenter() {
-
-            return this._drawCenter;
-        }
-
-        set marginLeft(marginLeft: number) {
-
-            this._dirty = this._dirty || marginLeft !== this._marginLeft;
-
-            this._marginLeft = marginLeft;
-        }
-
-        get marginLeft() {
-
-            return this._marginLeft;
-        }
-
-        set marginTop(marginTop: number) {
-
-            this._dirty = this._dirty || marginTop !== this._marginTop;
-
-            this._marginTop = marginTop;
-        }
-
-        get marginTop() {
-
-            return this._marginTop;
-        }
-
-        set marginRight(marginRight: number) {
-
-            this._dirty = this._dirty || marginRight !== this._marginRight;
-
-            this._marginRight = marginRight;
-        }
-
-        get marginRight() {
-
-            return this._marginRight;
-        }
-
-        set marginBottom(marginBottom: number) {
-
-            this._dirty = this._dirty || marginBottom !== this._marginBottom;
-
-            this._marginBottom = marginBottom;
-        }
-
-        get marginBottom() {
-
-            return this._marginBottom;
-        }
-
-        destroy() {
-
-            this.scene?.events?.removeListener("update", this._updateListener);
-
-            super.destroy();
         }
 
         getEditorSupport() {
