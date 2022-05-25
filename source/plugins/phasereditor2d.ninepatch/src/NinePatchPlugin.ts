@@ -57,5 +57,13 @@ namespace phasereditor2d.ninepatch {
         }
     }
 
-    colibri.Platform.addPlugin(NinePatchPlugin.getInstance());
+    if (phasereditor2d.ide.VER < "3.33.2") {
+
+        alert("The 'phasereditor2d-ninepatch-plugin' cannot be installed."
+            + "\nIt requires Phaser Editor 2D v3.33.2 or a newer version.")
+
+    } else {
+
+        colibri.Platform.addPlugin(NinePatchPlugin.getInstance());
+    }
 }

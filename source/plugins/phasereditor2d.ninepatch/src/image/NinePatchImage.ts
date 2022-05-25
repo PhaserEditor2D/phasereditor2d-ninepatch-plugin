@@ -43,11 +43,11 @@ namespace phasereditor2d.ninepatch.image {
 
             if (this.scene.textures.exists(hashKey)) {
 
-                console.log(`NinePatchImage.getFromCache(${hashKey})`);
+                // console.log(`NinePatchImage.getFromCache(${hashKey})`);
 
             } else {
 
-                console.log(`NinePatchImage.generateTexture(${hashKey})`);
+                // console.log(`NinePatchImage.generateTexture(${hashKey})`);
 
                 const rt = new Phaser.GameObjects.RenderTexture(this.scene, 0, 0, this.width, this.height);
                 const brush = new Phaser.GameObjects.TileSprite(this.scene, 0, 0, this.width, this.height, this.textureKey, this.textureFrame);
