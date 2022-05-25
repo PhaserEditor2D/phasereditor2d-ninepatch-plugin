@@ -2,6 +2,8 @@
 
 This repository contains NinePatch plugin for Phaser Editor 2D v3.
 
+This plugin requires Phaser Editoe 2D v3.33.2 or a newer version.
+
 ## Install
 
 The plugin is distributed as a NodeJS package:
