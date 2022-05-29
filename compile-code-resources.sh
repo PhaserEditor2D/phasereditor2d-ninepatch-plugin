@@ -2,6 +2,8 @@
 
 VER=$(node -p -e "require('./package.json').version")
 
+echo Compiling version $VER
+
 cd source/plugins/*/code-resources
 
 rm -Rf js js-module ts ts-module
