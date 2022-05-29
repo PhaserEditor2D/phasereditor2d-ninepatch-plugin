@@ -1,4 +1,4 @@
-// v1.1.0-beta.1
+// v1.1.0-beta.2
 import Phaser from "phaser";
 import NinePatchContainer from "./NinePatchContainer";
 export default function registerNinePatchContainerFactory() {
