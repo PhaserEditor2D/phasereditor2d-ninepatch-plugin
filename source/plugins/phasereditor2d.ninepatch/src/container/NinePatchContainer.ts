@@ -40,10 +40,10 @@ namespace phasereditor2d.ninepatch.container {
             this._editorSupport = new NinePatchContainerEditorSupport(this, scene);
 
             this._dirtyManager = new sceneobjects.DirtyObjectManager(this);
-            
+
             this._dirtyManager.addComponents(
                 NinePatchComponent,
-                NinePatchContainerComponent, 
+                NinePatchContainerComponent,
                 sceneobjects.TextureComponent,
                 sceneobjects.SizeComponent);
 
@@ -147,7 +147,12 @@ namespace phasereditor2d.ninepatch.container {
 
         private getPatchNameByPosition(row: number, col: number): string {
 
-            return `${this._originFrame.name}|${this._textureXs[col]}x${this._textureYs[row]}`;
+            const x = this._textureXs[col];
+            const y = this._textureYs[row];
+            const width = this._textureXs[col + 1] - this._textureXs[col];
+            const height = this._textureYs[row + 1] - this._textureYs[row];
+
+            return `${this._originFrame.name}|${x},${y},${width},${height}`;
         }
 
         setTexture(key: string, frame?: string | number): this {

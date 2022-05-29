@@ -1,4 +1,4 @@
-// v1.1.0-alpha.1
+// v1.1.0-beta.1
 import Phaser from "phaser";
 export default class NinePatchContainer extends Phaser.GameObjects.Container {
     static __BASE = "__BASE";
@@ -84,7 +84,11 @@ export default class NinePatchContainer extends Phaser.GameObjects.Container {
         this._originTexture.add(patch, this._originFrame.sourceIndex, this._originFrame.cutX + x, this._originFrame.cutY + y, width, height);
     }
     getPatchNameByPosition(row, col) {
-        return `${this._originFrame.name}|${this._textureXs[col]}x${this._textureYs[row]}`;
+        const x = this._textureXs[col];
+        const y = this._textureYs[row];
+        const width = this._textureXs[col + 1] - this._textureXs[col];
+        const height = this._textureYs[row + 1] - this._textureYs[row];
+        return `${this._originFrame.name}|${x},${y},${width},${height}`;
     }
     setTexture(key, frame) {
         this.textureKey = key;
