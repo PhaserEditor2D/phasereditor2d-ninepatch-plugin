@@ -1,4 +1,4 @@
-// v1.1.0-beta.2
+// v1.1.0-beta.3
 
 class NinePatchContainer extends Phaser.GameObjects.Container {
 
