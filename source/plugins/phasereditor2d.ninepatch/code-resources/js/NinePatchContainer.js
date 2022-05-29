@@ -1,4 +1,4 @@
-// v1.1.0-beta.3
+// v1.1.0-beta.4
 class NinePatchContainer extends Phaser.GameObjects.Container {
     static __BASE = "__BASE";
     drawCenter = true;

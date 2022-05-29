@@ -1,4 +1,4 @@
-// v1.1.0-beta.3
+// v1.1.0-beta.4
 class NinePatchImage extends Phaser.GameObjects.Image {
     _settingCacheTexture = false;
     textureKey;
