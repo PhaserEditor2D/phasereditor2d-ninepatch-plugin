@@ -1,4 +1,4 @@
-## v1.2.0
+## v1.2.0 - Jun 1, 2022
 
 * Adds the new NinePatchImage and NinePatchContainer game objects.
 * Shows the help of the ninepatch game object in the Inspector view.
