@@ -31,7 +31,7 @@ export default class NinePatchContainer extends Phaser.GameObjects.Container {
         this.textureKey = key;
         this.textureFrame = frame;
 
-        this.scene.events.once("update", () => this.redraw());
+        this.scene.events.once("update", this.redraw, this);
     }
 
     redraw() {
@@ -155,5 +155,10 @@ export default class NinePatchContainer extends Phaser.GameObjects.Container {
 
     updateDisplayOrigin() {
         // nothing, a dummy method
+    }
+    destroy() {
+        this.scene.events.off("update", this.redraw, this);
+
+        super.destroy()
     }
 }

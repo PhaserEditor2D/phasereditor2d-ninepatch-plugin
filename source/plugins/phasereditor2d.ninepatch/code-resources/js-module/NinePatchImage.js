@@ -15,7 +15,7 @@ export default class NinePatchImage extends Phaser.GameObjects.Image {
         this.height = height;
         this.textureKey = key;
         this.textureFrame = frame;
-        this.scene.events.once("update", () => this.redraw());
+        this.scene.events.once("update", this.redraw, this);
     }
     redraw() {
         const hashKey = [
@@ -126,5 +126,10 @@ export default class NinePatchImage extends Phaser.GameObjects.Image {
         rt.destroy();
         brush.destroy();
         textureImage.destroy();
+    }
+    destroy() {
+        this.scene.events.off("update", this.redraw, this);
+
+        super.destroy()
     }
 }
