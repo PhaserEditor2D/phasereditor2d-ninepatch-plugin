@@ -20,7 +20,7 @@ class NinePatchImage extends Phaser.GameObjects.Image {
         this.textureKey = key;
         this.textureFrame = frame;
 
-        this.scene.events.once("update", () => this.redraw());
+        this.scene.events.once("update", this.redraw, this);
     }
 
     redraw(): void {
@@ -174,5 +174,10 @@ class NinePatchImage extends Phaser.GameObjects.Image {
         rt.destroy();
         brush.destroy();
         textureImage.destroy();
+    }
+    destroy() {
+        this.scene.events.off("update", this.redraw, this);
+
+        super.destroy()
     }
 }

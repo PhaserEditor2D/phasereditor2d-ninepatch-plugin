@@ -14,7 +14,7 @@ class NinePatch extends Phaser.GameObjects.RenderTexture {
         this.textureFrame = frame;
         this._brush = new Phaser.GameObjects.TileSprite(scene, 0, 0, 1, 1, key, frame);
         this._brush.setOrigin(0, 0);
-        this.scene.events.once("update", () => this.redraw());
+        this.scene.events.once("update", this.redraw, this);
     }
     redraw() {
         this.clear();
@@ -95,5 +95,10 @@ class NinePatch extends Phaser.GameObjects.RenderTexture {
         this.textureFrame = frame;
         this.redraw();
         return this;
+    }
+    destroy() {
+        this.scene.events.off("update", this.redraw, this);
+
+        super.destroy()
     }
 }
